@@ -18,12 +18,12 @@
         <b-col md="12">
           <b-container>
             <h3 class="items">All Product</h3>
-            <b-button v-b-modal.modal-add>Add Product</b-button>
+            <b-button variant="primary" v-b-modal.modal-add>Add Product</b-button>
             <hr />
             <b-table
-              class="items"
+              style="font-size:1rem"
               id="table-transition-example"
-              :items="items"
+              :items="product"
               :fields="fields"
               striped
               small
@@ -31,8 +31,8 @@
               :tbody-transition-props="transProps"
             >
               <template v-slot:cell(actions)>
-                <b-button size="sm" class="mr-1">Update</b-button>
-                <b-button size="sm" class="mr-1">Delete</b-button>
+                <b-button size="sm" class="mr-1 btn btn-add" @click="setProduct(primary-key)">Update</b-button>
+                <b-button size="sm" class="mr-1 btn btn-cancel">Delete</b-button>
               </template>
             </b-table>
           </b-container>
@@ -83,7 +83,13 @@
               </div>
               <div class="modal-footer">
                 <button type="reset" class="btn btn-cancel">reset</button>
-                <button type="submit" class="btn btn-add">Add</button>
+                <button type="submit" class="btn btn-add" v-show="!isUpdate">Save</button>
+                <button
+                  type="button"
+                  class="btn btn-add"
+                  v-show="isUpdate"
+                  @click="patchProduct()"
+                >Update</button>
               </div>
             </form>
           </b-modal>
@@ -102,13 +108,18 @@ export default {
   components: {
     Sidebar
   },
+  transProps: {
+    // Transition name
+    name: 'flip-list'
+  },
   data() {
     return {
       alert: false,
       isMsg: '',
+      isUpdate: false,
       total_data: 0,
       perPage: 7,
-      currentPage: 2,
+      currentPage: 1,
       category: [],
       product: [],
       fields: [
@@ -126,13 +137,8 @@ export default {
       }
     }
   },
-  computed: {
-    rows() {
-      return this.total_data
-    }
-  },
   created() {
-    // this.getProduct()
+    this.getProduct()
     this.getCategory()
   },
   methods: {
@@ -155,7 +161,9 @@ export default {
     },
     getProduct() {
       axios
-        .get(`http://127.0.0.1:3001/product?limit=${this.perPage}`)
+        .get(
+          `http://127.0.0.1:3001/product?limit=${this.perPage}&${this.currentPage}`
+        )
         .then((response) => {
           this.product = response.data.data[0]
           this.total_data = response.data.data[1].totalData
@@ -177,6 +185,17 @@ export default {
           this.closeModal()
           this.getProduct()
         })
+    },
+    setProduct(data) {
+      console.log(data)
+      this.form = {
+        product_name: data.product_name,
+        id_category: data.id_category,
+        product_price: data.product_price,
+        status: data.status
+      }
+      this.isUpdate = true
+      this.product_id = data.product_id
     }
   }
 }
@@ -184,6 +203,7 @@ export default {
 
 <style scoped>
 .header-title {
+  font-size: 1.5rem;
   padding-left: 0;
   padding-right: 0;
   background: #ffffff;
@@ -191,12 +211,6 @@ export default {
   display: flex;
   flex-direction: row;
   align-content: space-between;
-}
-
-.search {
-  margin: auto;
-  padding: 5px;
-  text-align: right;
 }
 
 .title {
@@ -218,7 +232,7 @@ export default {
 .main .items {
   text-align: center;
   padding: 20px 5px;
-  font-size: 0.9rem;
+  font-size: 1rem;
 }
 
 .main .product-items {

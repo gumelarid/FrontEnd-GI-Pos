@@ -12,8 +12,11 @@
         <div>RP {{ price }}</div>
       </div>
       <div class="button-add">
-        <b-button variant="outline-primary" type="button" @click="increment()">
+        <b-button v-if="checklist" variant="outline-primary" type="button" @click="increment()">
           <b-icon icon="cart4"></b-icon>
+        </b-button>
+        <b-button v-else variant="success" type="button" @click="decrement()">
+          <b-icon icon="cart3"></b-icon>
         </b-button>
       </div>
     </div>
@@ -23,10 +26,20 @@
 <script>
 export default {
   name: 'Product',
-  props: ['name', 'price'],
+  props: ['name', 'price', 'id'],
+  data() {
+    return {
+      checklist: 1
+    }
+  },
   methods: {
     increment() {
-      this.$emit('increment', 1)
+      this.checklist = 0
+      this.$emit('increment', [1, [this.id, this.price]])
+    },
+    decrement() {
+      this.checklist = 1
+      this.$emit('decrement', [1, [this.id, this.price]])
     }
   }
 }

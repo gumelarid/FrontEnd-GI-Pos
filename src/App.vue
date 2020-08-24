@@ -13,5 +13,6 @@
 #app {
   font-family: Airbnb Cereal App, Helvetica, Arial, sans-serif;
   font-size: 10px;
+  background: rgba(190, 195, 202, 0.3);
 }
 </style>
