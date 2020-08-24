@@ -3,12 +3,16 @@
     <b-container fluid>
       <b-row>
         <b-col md="12" class="header-title">
+          <div class="list" v-b-toggle.sidebar>
+            <b-icon icon="list" style="width: 26px; height: 26px;"></b-icon>
+          </div>
           <div class="title">
             <p>History</p>
           </div>
         </b-col>
       </b-row>
     </b-container>
+    <Sidebar />
     <b-container fluid style="padding-left:0; padding-right:0;">
       <b-row class="main"></b-row>
     </b-container>
@@ -16,17 +20,11 @@
 </template>
 
 <script>
+import Sidebar from '../components/_module/Sidebar'
 export default {
-  name: 'Home',
-  data() {
-    return {
-      count: 0
-    }
-  },
-  methods: {
-    IncrementCount(data) {
-      this.count += data
-    }
+  name: 'History',
+  components: {
+    Sidebar
   }
 }
 </script>

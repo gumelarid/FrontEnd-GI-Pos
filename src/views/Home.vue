@@ -29,6 +29,7 @@
         <b-col md="9" class="items">
           <b-row class="product-items">
             <b-col
+              id="my-items"
               col="6"
               md="6"
               lg="4"
@@ -43,7 +44,7 @@
               />
             </b-col>
           </b-row>
-          <Pagination v-bind:currentPage="currentPage" v-bind:rows="rows" />
+          <Pagination v-bind:currentPage="currentPage" v-bind:rows="rows" v-bind:perPage="limit" />
         </b-col>
         <b-col md="3" class="cart-item">
           <img class="cart-img" src="../assets/img/icon/cart.png" alt="...." />
@@ -77,8 +78,7 @@ export default {
       count: 0,
       limit: 6,
       product: [],
-      currentPage: 0,
-      rows: 60
+      currentPage: 1
     }
   },
   created() {
@@ -91,10 +91,10 @@ export default {
     getProduct() {
       axios
         .get(`http://127.0.0.1:3001/product?limit=${this.limit}`)
-        .then(response => {
+        .then((response) => {
           this.product = response.data.data[0]
         })
-        .catch(error => {
+        .catch((error) => {
           console.log(error)
         })
     }
