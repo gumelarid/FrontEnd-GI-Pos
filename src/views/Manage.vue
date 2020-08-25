@@ -18,81 +18,8 @@
         <b-col md="12">
           <b-container>
             <h3 class="items">All Product</h3>
-            <b-button variant="primary" v-b-modal.modal-add>Add Product</b-button>
-            <hr />
-            <b-table
-              style="font-size:1rem"
-              id="table-transition-example"
-              :items="product"
-              :fields="fields"
-              striped
-              small
-              primary-key="a"
-              :tbody-transition-props="transProps"
-            >
-              <template v-slot:cell(actions)>
-                <b-button size="sm" class="mr-1 btn btn-add" @click="setProduct(primary-key)">Update</b-button>
-                <b-button size="sm" class="mr-1 btn btn-cancel">Delete</b-button>
-              </template>
-            </b-table>
+            <Table />
           </b-container>
-          <b-modal id="modal-add" ref="modal-add" centered title="BootstrapVue" hide-footer>
-            <form @submit.prevent="addProduct">
-              <div class="form-group row">
-                <label class="col-sm-2 col-form-label">Name</label>
-                <div class="col-sm-10">
-                  <input
-                    type="text"
-                    v-model="form.product_name"
-                    class="form-control"
-                    placeholder="Name"
-                    required
-                  />
-                </div>
-              </div>
-              <div class="form-group row">
-                <label class="col-sm-2 col-form-label">Image</label>
-                <div class="col-sm-10">
-                  <input type="text" v-model="form.product_image" class="form-control" required />
-                </div>
-              </div>
-              <div class="form-group row">
-                <label class="col-sm-2 col-form-label">Price</label>
-                <div class="col-sm-10">
-                  <input
-                    type="number"
-                    v-model="form.product_price"
-                    class="form-control price"
-                    placeholder="Price"
-                    required
-                  />
-                </div>
-              </div>
-              <div class="form-group row">
-                <label class="col-sm-2 col-form-label">Category</label>
-                <div class="col-sm-10">
-                  <select class="custom-select" v-model="form.id_category" required>
-                    <option disabled value>Please select Category</option>
-                    <option
-                      v-bind:value="value.category_id"
-                      v-for="(value, index) in category"
-                      :key="index"
-                    >{{value.category_name}}</option>
-                  </select>
-                </div>
-              </div>
-              <div class="modal-footer">
-                <button type="reset" class="btn btn-cancel">reset</button>
-                <button type="submit" class="btn btn-add" v-show="!isUpdate">Save</button>
-                <button
-                  type="button"
-                  class="btn btn-add"
-                  v-show="isUpdate"
-                  @click="patchProduct()"
-                >Update</button>
-              </div>
-            </form>
-          </b-modal>
         </b-col>
       </b-row>
     </b-container>
@@ -100,103 +27,14 @@
 </template>
 
 <script>
-import axios from 'axios'
 import Sidebar from '../components/_module/Sidebar'
+import Table from '../components/_module/Table'
 
 export default {
   name: 'manage',
   components: {
-    Sidebar
-  },
-  transProps: {
-    // Transition name
-    name: 'flip-list'
-  },
-  data() {
-    return {
-      alert: false,
-      isMsg: '',
-      isUpdate: false,
-      total_data: 0,
-      perPage: 7,
-      currentPage: 1,
-      category: [],
-      product: [],
-      fields: [
-        { key: 'product_name', sortable: true },
-        { key: 'category_name', sortable: true },
-        { key: 'product_price', sortable: true },
-        { key: 'actions', label: 'Actions' }
-      ],
-      form: {
-        id_category: '',
-        product_name: '',
-        product_image: '',
-        product_price: '',
-        status: 1
-      }
-    }
-  },
-  created() {
-    this.getProduct()
-    this.getCategory()
-  },
-  methods: {
-    makeToast(msg, append = false) {
-      this.$bvToast.toast(`${msg}`, {
-        title: 'Success',
-        autoHideDelay: 10000,
-        appendToast: append
-      })
-    },
-    getCategory() {
-      axios
-        .get('http://127.0.0.1:3001/category')
-        .then((response) => {
-          this.category = response.data.data
-        })
-        .catch((error) => {
-          console.log(error)
-        })
-    },
-    getProduct() {
-      axios
-        .get(
-          `http://127.0.0.1:3001/product?limit=${this.perPage}&${this.currentPage}`
-        )
-        .then((response) => {
-          this.product = response.data.data[0]
-          this.total_data = response.data.data[1].totalData
-        })
-        .catch((error) => {
-          console.log(error)
-        })
-    },
-    closeModal() {
-      this.$refs['modal-add'].hide()
-    },
-    addProduct() {
-      axios
-        .post('http://127.0.0.1:3001/product', this.form)
-        .then((response) => {
-          this.products = response.data.data
-          this.isMsg = response.data.msg
-          this.makeToast(this.isMsg)
-          this.closeModal()
-          this.getProduct()
-        })
-    },
-    setProduct(data) {
-      console.log(data)
-      this.form = {
-        product_name: data.product_name,
-        id_category: data.id_category,
-        product_price: data.product_price,
-        status: data.status
-      }
-      this.isUpdate = true
-      this.product_id = data.product_id
-    }
+    Sidebar,
+    Table
   }
 }
 </script>
