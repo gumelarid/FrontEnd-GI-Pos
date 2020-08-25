@@ -1,12 +1,5 @@
 <template>
-  <b-sidebar
-    width="max-content"
-    id="sidebar"
-    :backdrop-variant="variant"
-    backdrop
-    shadow
-    no-header-close
-  >
+  <b-sidebar width="max-content" id="sidebar" backdrop shadow no-header-close>
     <div class="navigation px-3 py-2">
       <router-link to="/" class="nav-link">
         <b-icon icon="book" style="height:26px; width:26px;"></b-icon>

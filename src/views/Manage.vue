@@ -17,8 +17,18 @@
       <b-row class="main">
         <b-col md="12">
           <b-container>
-            <h3 class="items">All Product</h3>
-            <Table />
+            <div class="my-5">
+              <b-card no-body>
+                <b-tabs pills card>
+                  <b-tab title="Product" active>
+                    <Table />
+                  </b-tab>
+                  <b-tab title="Category">
+                    <Category />
+                  </b-tab>
+                </b-tabs>
+              </b-card>
+            </div>
           </b-container>
         </b-col>
       </b-row>
@@ -29,12 +39,14 @@
 <script>
 import Sidebar from '../components/_module/Sidebar'
 import Table from '../components/_module/Table'
+import Category from '../components/_module/Category'
 
 export default {
   name: 'manage',
   components: {
     Sidebar,
-    Table
+    Table,
+    Category
   }
 }
 </script>
