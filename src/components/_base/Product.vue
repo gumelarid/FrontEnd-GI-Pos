@@ -1,6 +1,6 @@
 <template>
   <div>
-    <b-navbar class="text-center">
+    <b-input-group style="margin:auto">
       <!-- search -->
       <b-nav-form v-on:submit.prevent="searchProduct">
         <b-form-input v-model="keyword" class="mr-sm-2" placeholder="Search Product......."></b-form-input>
@@ -10,7 +10,7 @@
       </b-nav-form>
 
       <!-- sort -->
-      <b-dropdown id="sort" text="Sort" class="m-2" variant="info">
+      <b-dropdown id="sort" text="Sort" class="m-2" variant="outline-primary">
         <b-dropdown-item-button>Category</b-dropdown-item-button>
         <b-dropdown-group id="dropdown-group-2" header="Date">
           <b-dropdown-item-button>Oldest</b-dropdown-item-button>
@@ -21,13 +21,13 @@
           <b-dropdown-item-button>Highest</b-dropdown-item-button>
         </b-dropdown-group>
       </b-dropdown>
-      <b-dropdown id="sort" text="Sort" class="m-2" variant="info">
+      <b-dropdown id="sort" text="Name" class="m-2" variant="outline-primary">
         <b-dropdown-group id="dropdown-group-1" header="Name">
           <b-dropdown-item-button>A-Z</b-dropdown-item-button>
           <b-dropdown-item-button>Z-A</b-dropdown-item-button>
         </b-dropdown-group>
       </b-dropdown>
-    </b-navbar>
+    </b-input-group>
 
     <div v-if="(showPagination === false)" class="text-center text-item">{{ dataFound }}</div>
 
@@ -111,23 +111,26 @@ export default {
       const cekIndex = this.cart.findIndex(
         (value) => value.product_id === data.product_id
       )
+      console.log(cekIndex)
 
       if (cekIndex >= 0) {
         this.cart.splice(this.cart.indexOf(cekIndex), 1)
-        if (this.cart.length >= 0) {
-          console.log(this.cart)
-        } else {
-          this.cart = []
-          console.log(this.cart)
-        }
+        console.log(this.cart)
+        // if (this.cart.length >= 0) {
+        //   this.cart
+        // } else {
+        //   this.cart = []
+        // }
       } else {
         const setCart = {
           product_id: data.product_id,
+          product_name: data.product_name,
+          product_price: data.product_price,
           qty: 1
         }
         this.cart.push(setCart)
-        console.log(this.cart)
       }
+      this.$emit('itemCart', this.cart)
     },
     // get product
     getProduct() {
@@ -173,7 +176,6 @@ export default {
 
 <style scoped>
 /* product item */
-
 .main .product-items .item {
   background-color: none;
   margin: 10px 0;
@@ -198,7 +200,6 @@ export default {
 .text-item {
   flex: 2;
   font-size: 0.9rem;
-  /* text-align: left; */
 }
 .button-add {
   flex: 1;

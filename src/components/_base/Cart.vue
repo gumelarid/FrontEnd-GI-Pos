@@ -1,28 +1,30 @@
 <template>
-  <div class="item-order">
-    <img src="https://picsum.photos/250/250/?image=54" alt="...." width="100px" height="100px" />
-    <div class="selected-items">
-      <p>{{product_name}}</p>
-      <div class="quantity buttons_added">
-        <input type="button" value="-" class="minus" />
-        <input
-          type="number"
-          step="1"
-          min="1"
-          max
-          name="quantity"
-          value="1"
-          title="Qty"
-          class="input-text qty text"
-          size="4"
-          pattern
-          inputmode
-        />
-        <input type="button" value="+" class="plus" />
+  <div>
+    <div class="item-order" v-for="(value, index) in itemCart" :key="index">
+      <img src="https://picsum.photos/250/250/?image=54" alt="...." width="100px" height="100px" />
+      <div class="selected-items">
+        <p>{{value.product_name}}</p>
+        <div class="quantity buttons_added">
+          <input type="button" value="-" class="minus" />
+          <input
+            type="number"
+            step="1"
+            min="1"
+            max
+            name="quantity"
+            value="1"
+            title="Qty"
+            class="input-text qty text"
+            size="4"
+            pattern
+            inputmode
+          />
+          <input type="button" value="+" class="plus" />
+        </div>
       </div>
-    </div>
-    <div class="price">
-      <p>Rp.{{product_price}}</p>
+      <div class="price">
+        <p>Rp.{{value.product_price}}</p>
+      </div>
     </div>
   </div>
 </template>
@@ -30,7 +32,7 @@
 <script>
 export default {
   name: 'cart',
-  props: ['product_name', 'product_id', 'product_price']
+  props: ['itemCart']
 }
 </script>
 

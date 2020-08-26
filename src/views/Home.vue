@@ -27,7 +27,7 @@
     <b-container fluid style="padding-left:0; padding-right:0;">
       <b-row class="main">
         <b-col md="9" class="items">
-          <Product />
+          <Product @itemCart="cart" />
         </b-col>
         <b-col md="3" class="cart-item">
           <div v-if="count <= 0">
@@ -40,7 +40,7 @@
             </div>
           </div>
           <div v-else>
-            <Cart />
+            <Cart :itemCart="order" />
           </div>
         </b-col>
       </b-row>
@@ -55,7 +55,6 @@ import Sidebar from '../components/_module/Sidebar'
 
 export default {
   name: 'Home',
-
   components: {
     Sidebar,
     Product,
@@ -63,7 +62,14 @@ export default {
   },
   data() {
     return {
-      count: 0
+      count: 0,
+      order: []
+    }
+  },
+  methods: {
+    cart(data) {
+      this.order = data
+      this.count = this.order.length
     }
   }
 }
