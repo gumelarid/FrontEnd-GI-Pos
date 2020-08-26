@@ -55,6 +55,7 @@ import Sidebar from '../components/_module/Sidebar'
 
 export default {
   name: 'Home',
+
   components: {
     Sidebar,
     Product,

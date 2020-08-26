@@ -1,5 +1,37 @@
 <template>
   <div>
+    <b-navbar class="text-center">
+      <!-- search -->
+      <b-nav-form v-on:submit.prevent="searchProduct">
+        <b-form-input v-model="keyword" class="mr-sm-2" placeholder="Search Product......."></b-form-input>
+        <b-button variant="primary" class="my-2 my-sm-0" type="submit">
+          <b-icon icon="search"></b-icon>
+        </b-button>
+      </b-nav-form>
+
+      <!-- sort -->
+      <b-dropdown id="sort" text="Sort" class="m-2" variant="info">
+        <b-dropdown-item-button>Category</b-dropdown-item-button>
+        <b-dropdown-group id="dropdown-group-2" header="Date">
+          <b-dropdown-item-button>Oldest</b-dropdown-item-button>
+          <b-dropdown-item-button>Newest</b-dropdown-item-button>
+        </b-dropdown-group>
+        <b-dropdown-group id="dropdown-group-3" header="Price">
+          <b-dropdown-item-button>Lowest</b-dropdown-item-button>
+          <b-dropdown-item-button>Highest</b-dropdown-item-button>
+        </b-dropdown-group>
+      </b-dropdown>
+      <b-dropdown id="sort" text="Sort" class="m-2" variant="info">
+        <b-dropdown-group id="dropdown-group-1" header="Name">
+          <b-dropdown-item-button>A-Z</b-dropdown-item-button>
+          <b-dropdown-item-button>Z-A</b-dropdown-item-button>
+        </b-dropdown-group>
+      </b-dropdown>
+    </b-navbar>
+
+    <div v-if="(showPagination === false)" class="text-center text-item">{{ dataFound }}</div>
+
+    <!-- product -->
     <b-row class="product-items">
       <b-col
         id="my-items"
@@ -37,6 +69,8 @@
         </div>
       </b-col>
     </b-row>
+
+    <!-- pagination -->
     <b-pagination
       v-model="page"
       :per-page="limit"
@@ -61,15 +95,18 @@ export default {
       totalData: 0,
       limit: 6,
       page: 1,
-      showPagination: true,
+      showPagination: '',
       product: [],
-      cart: []
+      cart: [],
+      keyword: '',
+      dataFound: 0
     }
   },
   created() {
     this.getProduct()
   },
   methods: {
+    // add cart
     addToCart(data) {
       const cekIndex = this.cart.findIndex(
         (value) => value.product_id === data.product_id
@@ -92,20 +129,14 @@ export default {
         console.log(this.cart)
       }
     },
-    decrement() {
-      this.checklist = true
-      this.$emit('decrement', -1)
-    },
-    check(data) {
-      // check data berdasarkan id terus di some jika idnya sama maka bernilai true
-      return this.cart.some((value) => value.product_id === data.product_id)
-    },
+    // get product
     getProduct() {
       axios
         .get(
           `http://127.0.0.1:3001/product?limit=${this.limit}&page=${this.page}`
         )
         .then((response) => {
+          this.showPagination = true
           this.product = response.data.data[0]
           this.totalData = response.data.data[1].totalData
         })
@@ -113,6 +144,25 @@ export default {
           console.log(error)
         })
     },
+
+    // search
+    searchProduct() {
+      if (!this.keyword.length <= 0) {
+        axios
+          .get(`http://127.0.0.1:3001/product/search?keyword=${this.keyword}`)
+          .then((response) => {
+            console.log(this.keyword)
+            this.showPagination = false
+            this.product = response.data.data[0]
+            this.dataFound = response.data.msg
+            this.keyword = ''
+          })
+      } else {
+        this.getProduct()
+      }
+    },
+
+    // pagination
     pageChange(value) {
       this.page = value
       this.getProduct()
