@@ -27,34 +27,7 @@
     <b-container fluid style="padding-left:0; padding-right:0;">
       <b-row class="main">
         <b-col md="9" class="items">
-          <b-row class="product-items">
-            <b-col
-              id="my-items"
-              col="6"
-              md="6"
-              lg="4"
-              class="item"
-              v-for="(value, index) in product"
-              :key="index"
-            >
-              <Product
-                @decrement="DecrementCount"
-                @increment="IncrementCount"
-                v-bind:id="value.product_id"
-                v-bind:name="value.product_name"
-                v-bind:price="value.product_price"
-              />
-            </b-col>
-          </b-row>
-          <b-pagination
-            v-model="page"
-            :per-page="limit"
-            :total-rows="totalData"
-            @change="pageChange"
-            v-show="showPagination"
-            align="center"
-            aria-controls="my-items"
-          ></b-pagination>
+          <Product />
         </b-col>
         <b-col md="3" class="cart-item">
           <div v-if="count <= 0">
@@ -67,7 +40,7 @@
             </div>
           </div>
           <div v-else>
-            <Cart v-bind:product_price="product_price" />
+            <Cart />
           </div>
         </b-col>
       </b-row>
@@ -76,7 +49,6 @@
 </template>
 
 <script>
-import axios from 'axios'
 import Cart from '../components/_base/Cart'
 import Product from '../components/_base/Product'
 import Sidebar from '../components/_module/Sidebar'
@@ -90,48 +62,7 @@ export default {
   },
   data() {
     return {
-      count: 0,
-      totalData: 0,
-      limit: 6,
-      page: 1,
-      showPagination: true,
-      product: [],
-      product_id: '',
-      product_price: ''
-    }
-  },
-  created() {
-    this.getProduct()
-  },
-  methods: {
-    IncrementCount(data) {
-      this.product_price = data[1].product_price
-      this.count += data[0]
-    },
-    DecrementCount(data) {
-      if (this.count <= 0) {
-        data = 0
-      } else {
-        this.product_id = data[1][0]
-        this.count -= data[0]
-      }
-    },
-    getProduct() {
-      axios
-        .get(
-          `http://127.0.0.1:3001/product?limit=${this.limit}&page=${this.page}`
-        )
-        .then((response) => {
-          this.product = response.data.data[0]
-          this.totalData = response.data.data[1].totalData
-        })
-        .catch((error) => {
-          console.log(error)
-        })
-    },
-    pageChange(value) {
-      this.page = value
-      this.getProduct()
+      count: 0
     }
   }
 }
@@ -186,21 +117,8 @@ export default {
   margin-bottom: 0;
 }
 
-/* product item */
 .main {
   margin: 1px;
-}
-
-.main .product-items .item {
-  background-color: none;
-  margin: 10px 0;
-}
-
-.main .product-items {
-  margin-bottom: 20px;
-  margin-left: 0;
-  margin-right: 0;
-  padding: 5px 2px;
 }
 
 /* cart */
