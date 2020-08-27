@@ -27,7 +27,7 @@
     <b-container fluid style="padding-left:0; padding-right:0;">
       <b-row class="main">
         <b-col md="9" class="items">
-          <Product @itemCart="cart" />
+          <Product :clearCart="reset" @itemCart="cart" />
         </b-col>
         <b-col md="3" class="cart-item">
           <div v-if="count <= 0">
@@ -40,7 +40,7 @@
             </div>
           </div>
           <div v-else>
-            <Cart :itemCart="order" />
+            <Cart :itemCart="order" @clearCart="clearCart" />
           </div>
         </b-col>
       </b-row>
@@ -60,8 +60,10 @@ export default {
     Product,
     Cart
   },
+
   data() {
     return {
+      reset: '',
       count: 0,
       order: []
     }
@@ -69,8 +71,12 @@ export default {
   methods: {
     cart(data) {
       this.order = data
-      console.log(this.order)
       this.count = this.order.length
+    },
+    clearCart() {
+      this.order = []
+      this.count = 0
+      this.reset = true
     }
   }
 }

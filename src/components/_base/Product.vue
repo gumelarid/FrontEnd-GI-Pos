@@ -35,7 +35,7 @@
     <b-row class="product-items">
       <b-col
         id="my-items"
-        col="6"
+        col="true"
         md="6"
         lg="4"
         class="item"
@@ -88,9 +88,10 @@ import axios from 'axios'
 
 export default {
   name: 'Product',
+  props: ['clearCart'],
   data() {
     return {
-      checklist: true,
+      // checklist: true,
       count: 0,
       totalData: 0,
       limit: 6,
@@ -170,7 +171,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped >
 /* product item */
 .main .product-items .item {
   background-color: none;
