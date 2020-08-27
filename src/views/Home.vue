@@ -69,6 +69,7 @@ export default {
   methods: {
     cart(data) {
       this.order = data
+      console.log(this.order)
       this.count = this.order.length
     }
   }

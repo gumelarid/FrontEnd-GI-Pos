@@ -55,14 +55,14 @@
           </div>
           <div class="button-add">
             <b-button
-              v-if="checklist"
+              v-if="!checkList(value)"
               variant="outline-primary"
               type="button"
               @click="addToCart(value)"
             >
               <b-icon icon="cart4"></b-icon>
             </b-button>
-            <b-button v-else variant="success" type="button" @click="decrement()">
+            <b-button v-else variant="success" type="button" @click="removeFromCart(value)">
               <b-icon icon="cart3"></b-icon>
             </b-button>
           </div>
@@ -108,28 +108,21 @@ export default {
   methods: {
     // add cart
     addToCart(data) {
-      const cekIndex = this.cart.findIndex(
-        (value) => value.product_id === data.product_id
-      )
-      console.log(cekIndex)
-
-      if (cekIndex >= 0) {
-        this.cart.splice(this.cart.indexOf(cekIndex), 1)
-        console.log(this.cart)
-        // if (this.cart.length >= 0) {
-        //   this.cart
-        // } else {
-        //   this.cart = []
-        // }
-      } else {
-        const setCart = {
-          product_id: data.product_id,
-          product_name: data.product_name,
-          product_price: data.product_price,
-          qty: 1
-        }
-        this.cart.push(setCart)
+      const setCart = {
+        product_id: data.product_id,
+        product_name: data.product_name,
+        product_price: data.product_price,
+        qty: 1
       }
+      this.cart.push(setCart)
+      this.$emit('itemCart', this.cart)
+    },
+    // remove cart
+    removeFromCart(data) {
+      this.cart.splice(
+        this.cart.findIndex((value) => value.product_id === data.product_id),
+        1
+      )
       this.$emit('itemCart', this.cart)
     },
     // get product
@@ -169,6 +162,9 @@ export default {
     pageChange(value) {
       this.page = value
       this.getProduct()
+    },
+    checkList(data) {
+      return this.cart.some((value) => value.product_id === data.product_id)
     }
   }
 }
