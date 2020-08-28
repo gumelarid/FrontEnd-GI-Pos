@@ -21,7 +21,7 @@
               <div class="card-body">
                 <p>Today's Income</p>
                 <p>
-                  <strong>Rp. 1.000.000</strong>
+                  <strong>Rp. {{incomeDay}}</strong>
                 </p>
                 <p>
                   <small class="text-muted">+2% Yesterday</small>
@@ -32,7 +32,7 @@
               <div class="card-body">
                 <p>Order</p>
                 <p>
-                  <strong>3.270</strong>
+                  <strong>{{totalOrders}}</strong>
                 </p>
                 <p>
                   <small class="text-muted">+5% Last Week</small>
@@ -43,7 +43,7 @@
               <div class="card-body">
                 <p>This Year's Income</p>
                 <p>
-                  <strong>Rp. 100.000.000.00</strong>
+                  <strong>Rp. {{incomeYear}}</strong>
                 </p>
                 <p>
                   <small class="text-muted">+10% Last Year</small>
@@ -72,15 +72,25 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td class="text-muted">#10928</td>
+                  <tr v-for="(value,index) in data" :key="index">
+                    <td class="text-muted">#{{value.invoice}}</td>
                     <td class="text-muted">Chasier 1</td>
-                    <td class="text-muted">06 October 2019</td>
-                    <td class="text-muted">Ice Tea, Salad With peanut sauce</td>
-                    <td class="text-muted">Rp. 120.000</td>
+                    <td class="text-muted">{{value.date}}</td>
+                    <td class="text-muted">{{value.order}}</td>
+                    <td class="text-muted">Rp. {{value.total}}</td>
                   </tr>
                 </tbody>
               </table>
+              <!-- pagination -->
+              <b-pagination
+                v-model="page"
+                :per-page="limit"
+                :total-rows="totalData"
+                @change="pageChange"
+                v-show="showPagination"
+                align="center"
+                aria-controls="my-items"
+              ></b-pagination>
             </div>
           </div>
         </b-col>
@@ -90,11 +100,95 @@
 </template>
 
 <script>
+import axios from 'axios'
 import Sidebar from '../components/_module/Sidebar'
 export default {
   name: 'History',
   components: {
     Sidebar
+  },
+  data() {
+    return {
+      totalData: 0,
+      limit: 6,
+      page: 1,
+      showPagination: true,
+      incomeDay: 0,
+      totalOrders: 0,
+      incomeYear: 0,
+      history: [],
+      data: []
+    }
+  },
+  created() {
+    this.getHistory()
+    this.getIncomeDay()
+    this.getOrderWeek()
+    this.getIncomeYear()
+  },
+  methods: {
+    getIncomeDay() {
+      axios
+        .get('http://127.0.0.1:3001/history/income')
+        .then((response) => {
+          this.incomeDay = response.data.data.incomeDay
+        })
+        .catch((error) => {
+          console.log(error)
+        })
+    },
+    getOrderWeek() {
+      axios
+        .get('http://127.0.0.1:3001/history/count')
+        .then((response) => {
+          this.totalOrders = response.data.data.totalOrders
+        })
+        .catch((error) => {
+          console.log(error)
+        })
+    },
+    getIncomeYear() {
+      axios
+        .get('http://127.0.0.1:3001/history/total')
+        .then((response) => {
+          this.incomeYear = response.data.data.incomeYear
+        })
+        .catch((error) => {
+          console.log(error)
+        })
+    },
+
+    //  history order
+    getHistory() {
+      axios
+        .get(
+          `http://127.0.0.1:3001/history?limit=${this.limit}&page=${this.page}`
+        )
+        .then((response) => {
+          this.history = response.data.data
+          this.totalData = response.data.pagination.totalData
+
+          this.history.map((value) => {
+            const setData = {
+              invoice: value.invoice,
+              date: value.history_created_at.slice(0, 10),
+              order: value.orders.map((item) => item.product_name).join(', '),
+              total: value.subtotal
+                .toString()
+                .replace(/\B(?=(\d{3})+(?!\d))/g, '.')
+            }
+            this.data = [...this.data, setData]
+          })
+        })
+        .catch((error) => {
+          console.log(error)
+        })
+    },
+    pageChange(value) {
+      this.page = value
+      this.data = []
+      this.getHistory()
+    }
   }
 }
 </script>
