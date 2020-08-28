@@ -19,7 +19,10 @@
         <tr v-for="(value,index) in product" :key="index">
           <td class="text-muted">{{value.product_name}}</td>
           <td class="text-muted">{{value.category_name}}</td>
-          <td class="text-muted">{{value.product_price}}</td>
+          <td class="text-muted">
+            Rp. {{value.product_price.toString()
+            .replace(/\B(?=(\d{3})+(?!\d))/g, '.')}}
+          </td>
           <td>
             <b-button
               size="sm"

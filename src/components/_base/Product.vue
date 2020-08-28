@@ -53,7 +53,10 @@
         <div class="item-body">
           <div class="text-item">
             <strong>{{ value.product_name }}</strong>
-            <div>RP {{ value.product_price }}</div>
+            <div>
+              RP {{ value.product_price.toString()
+              .replace(/\B(?=(\d{3})+(?!\d))/g, '.') }}
+            </div>
           </div>
           <div class="button-add">
             <b-button

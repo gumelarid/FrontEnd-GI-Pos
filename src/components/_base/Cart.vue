@@ -22,7 +22,10 @@
         </div>
       </div>
       <div class="price">
-        <p>Rp.{{value.product_price * value.qty}}</p>
+        <p>
+          Rp.{{(value.product_price * value.qty).toString()
+          .replace(/\B(?=(\d{3})+(?!\d))/g, '.')}}
+        </p>
       </div>
     </div>
     <hr />
@@ -30,7 +33,10 @@
     <div class="checkout align-text-bottom">
       <div class="total">
         <p>Total:</p>
-        <p>Rp. {{ totalPrice() }}</p>
+        <p>
+          Rp. {{ totalPrice().toString()
+          .replace(/\B(?=(\d{3})+(?!\d))/g, '.') }}
+        </p>
       </div>
       <p class="text-left text-muted">*Belum Termasuk PPN</p>
       <button
@@ -56,16 +62,25 @@
           <div>
             <strong>{{value.product_name}} x{{value.order_qty}}</strong>
           </div>
-          <div>RP {{value.order_total}}</div>
+          <div>
+            RP {{value.order_total.toString()
+            .replace(/\B(?=(\d{3})+(?!\d))/g, '.')}}
+          </div>
         </div>
 
         <div class="ppn-order">
           <div>
             <strong>PPN 10%</strong>
           </div>
-          <div>RP {{subTotal - totalPrice()}}</div>
+          <div>
+            RP {{(subTotal - totalPrice()).toString()
+            .replace(/\B(?=(\d{3})+(?!\d))/g, '.')}}
+          </div>
         </div>
-        <p class="text-right">Total : Rp. {{subTotal}}</p>
+        <p class="text-right">
+          Total : Rp. {{subTotal.toString()
+          .replace(/\B(?=(\d{3})+(?!\d))/g, '.')}}
+        </p>
         <p>Payment : Cash</p>
       </div>
       <div class="modal-footer">

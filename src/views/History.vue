@@ -21,7 +21,10 @@
               <div class="card-body">
                 <p>Today's Income</p>
                 <p>
-                  <strong>Rp. {{incomeDay}}</strong>
+                  <strong>
+                    Rp. {{incomeDay.toString()
+                    .replace(/\B(?=(\d{3})+(?!\d))/g, '.')}}
+                  </strong>
                 </p>
                 <p>
                   <small class="text-muted">+2% Yesterday</small>
@@ -32,7 +35,10 @@
               <div class="card-body">
                 <p>Order</p>
                 <p>
-                  <strong>{{totalOrders}}</strong>
+                  <strong>
+                    {{totalOrders.toString()
+                    .replace(/\B(?=(\d{3})+(?!\d))/g, '.')}}
+                  </strong>
                 </p>
                 <p>
                   <small class="text-muted">+5% Last Week</small>
@@ -43,7 +49,10 @@
               <div class="card-body">
                 <p>This Year's Income</p>
                 <p>
-                  <strong>Rp. {{incomeYear}}</strong>
+                  <strong>
+                    Rp. {{incomeYear.toString()
+                    .replace(/\B(?=(\d{3})+(?!\d))/g, '.')}}
+                  </strong>
                 </p>
                 <p>
                   <small class="text-muted">+10% Last Year</small>
