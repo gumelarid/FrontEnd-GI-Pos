@@ -126,7 +126,6 @@ export default {
       axios
         .patch(`http://127.0.0.1:3001/category/${this.category_id}`, this.form)
         .then((response) => {
-          console.log(response)
           this.isMsg = response.data.msg
           this.makeToast(this.isMsg)
           this.closeModal()

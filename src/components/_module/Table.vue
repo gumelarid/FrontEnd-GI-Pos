@@ -91,7 +91,17 @@
                 v-bind:value="value.category_id"
                 v-for="(value, index) in category"
                 :key="index"
-              >{{value.category_name}}</option>
+              >{{ value.category_name }}</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group row" v-show="isUpdate">
+          <label class="col-sm-2 col-form-label">Status</label>
+          <div class="col-sm-10">
+            <select class="custom-select" v-model="form.status" required>
+              <option disabled value>Change Status</option>
+              <option value="0">Not Active</option>
+              <option value="1">Active</option>
             </select>
           </div>
         </div>
@@ -130,7 +140,7 @@ export default {
         product_name: '',
         product_image: '',
         product_price: '',
-        status: 1
+        status: ''
       }
     }
   },
@@ -188,6 +198,35 @@ export default {
           this.getProduct()
           this.form = {
             id_category: '',
+            product_name: '',
+            product_image: '',
+            product_price: '',
+            status: 1
+          }
+        })
+    },
+    setProduct(data) {
+      this.form = {
+        id_category: data.category_id,
+        product_name: data.product_name,
+        product_image: data.product_image,
+        product_price: data.product_price,
+        status: data.status
+      }
+      this.isUpdate = true
+      this.product_id = data.product_id
+    },
+    patchProduct() {
+      axios
+        .put(`http://127.0.0.1:3001/product/${this.product_id}`, this.form)
+        .then((response) => {
+          this.isMsg = response.data.msg
+          this.makeToast(this.isMsg)
+          this.closeModal()
+          this.getProduct()
+          this.isUpdate = false
+          this.form = {
+            category_id: '',
             product_name: '',
             product_image: '',
             product_price: '',
