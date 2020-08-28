@@ -111,12 +111,6 @@ export default {
   align-content: space-between;
 }
 
-.search {
-  margin: auto;
-  padding: 5px;
-  text-align: right;
-}
-
 .title {
   padding: 5px;
   margin: auto;

@@ -10,21 +10,23 @@
       </b-nav-form>
 
       <!-- sort -->
-      <b-dropdown id="sort" text="Sort" class="m-2" variant="outline-primary">
-        <b-dropdown-item-button>Category</b-dropdown-item-button>
-        <b-dropdown-group id="dropdown-group-2" header="Date">
-          <b-dropdown-item-button>Oldest</b-dropdown-item-button>
-          <b-dropdown-item-button>Newest</b-dropdown-item-button>
-        </b-dropdown-group>
-        <b-dropdown-group id="dropdown-group-3" header="Price">
-          <b-dropdown-item-button>Lowest</b-dropdown-item-button>
-          <b-dropdown-item-button>Highest</b-dropdown-item-button>
+
+      <b-dropdown id="sort" text="Product Name" class="m-2" variant="outline-primary">
+        <b-dropdown-group id="dropdown-group-1" header="Product Name">
+          <b-dropdown-item-button @click="sortNameASC()">A-Z</b-dropdown-item-button>
+          <b-dropdown-item-button @click="sortNameDESC()">Z-A</b-dropdown-item-button>
         </b-dropdown-group>
       </b-dropdown>
-      <b-dropdown id="sort" text="Name" class="m-2" variant="outline-primary">
-        <b-dropdown-group id="dropdown-group-1" header="Name">
-          <b-dropdown-item-button>A-Z</b-dropdown-item-button>
-          <b-dropdown-item-button>Z-A</b-dropdown-item-button>
+      <b-dropdown id="sort" text="Price" class="m-2" variant="outline-primary">
+        <b-dropdown-group id="dropdown-group-1" header="Price">
+          <b-dropdown-item-button @click="sortPriceASC()">Lowest Price</b-dropdown-item-button>
+          <b-dropdown-item-button @click="sortPriceDESC()">Highest Price</b-dropdown-item-button>
+        </b-dropdown-group>
+      </b-dropdown>
+      <b-dropdown id="sort" text="Date" class="m-2" variant="outline-primary">
+        <b-dropdown-group id="dropdown-group-1" header="Date">
+          <b-dropdown-item-button @click="sortDateASC()">Old Product</b-dropdown-item-button>
+          <b-dropdown-item-button @click="sortDateDESC()">New Product</b-dropdown-item-button>
         </b-dropdown-group>
       </b-dropdown>
     </b-input-group>
@@ -91,7 +93,8 @@ export default {
   props: ['clearCart'],
   data() {
     return {
-      // checklist: true,
+      sortBy: 'product_name',
+      sort: 'ASC',
       count: 0,
       totalData: 0,
       limit: 6,
@@ -130,7 +133,7 @@ export default {
     getProduct() {
       axios
         .get(
-          `http://127.0.0.1:3001/product?limit=${this.limit}&page=${this.page}`
+          `http://127.0.0.1:3001/product?limit=${this.limit}&page=${this.page}&name=${this.sortBy}&sort=${this.sort}`
         )
         .then((response) => {
           this.showPagination = true
@@ -148,7 +151,6 @@ export default {
         axios
           .get(`http://127.0.0.1:3001/product/search?keyword=${this.keyword}`)
           .then((response) => {
-            console.log(this.keyword)
             this.showPagination = false
             this.product = response.data.data[0]
             this.dataFound = response.data.msg
@@ -157,6 +159,47 @@ export default {
       } else {
         this.getProduct()
       }
+    },
+
+    // sort
+    // sort by name
+    sortNameASC() {
+      this.sortBy = 'product_name'
+      this.sort = 'ASC'
+      this.page = 1
+      this.getProduct()
+    },
+    sortNameDESC() {
+      this.sortBy = 'product_name'
+      this.sort = 'DESC'
+      this.page = 1
+      this.getProduct()
+    },
+    // price
+    sortPriceASC() {
+      this.sortBy = 'product_price'
+      this.sort = 'ASC'
+      this.page = 1
+      this.getProduct()
+    },
+    sortPriceDESC() {
+      this.sortBy = 'product_price'
+      this.sort = 'DESC'
+      this.page = 1
+      this.getProduct()
+    },
+    // date
+    sortDateASC() {
+      this.sortBy = 'product_created_at'
+      this.sort = 'ASC'
+      this.page = 1
+      this.getProduct()
+    },
+    sortDateDESC() {
+      this.sortBy = 'product_created_at'
+      this.sort = 'DESC'
+      this.page = 1
+      this.getProduct()
     },
 
     // pagination

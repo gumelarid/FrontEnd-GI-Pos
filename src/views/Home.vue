@@ -9,11 +9,6 @@
           <div class="title">
             <p>Food Items</p>
           </div>
-          <div class="search">
-            <a class="search-btn" href>
-              <b-icon icon="search" style="width: 26px; height: 26px;"></b-icon>
-            </a>
-          </div>
         </b-col>
         <b-col md="3" class="cart">
           <p>
@@ -94,18 +89,6 @@ export default {
   align-content: space-between;
 }
 
-.list {
-  margin: auto;
-  padding: 5px;
-  text-align: right;
-}
-
-.search {
-  margin: auto;
-  padding: 5px;
-  text-align: right;
-}
-
 .title {
   padding: 5px;
   margin: auto;
@@ -114,12 +97,21 @@ export default {
 }
 
 .title p {
+  font-size: 1rem;
   line-height: 25px;
   margin-bottom: 0;
 }
+.main {
+  margin: 1px;
+}
+
+.list {
+  margin: auto;
+  padding: 5px;
+  text-align: right;
+}
 
 .cart {
-  font-size: 1.5rem;
   background: #ffffff;
   box-shadow: 0px 4px 1px rgba(0, 0, 0, 0.25);
   text-align: center;
@@ -127,12 +119,9 @@ export default {
 }
 
 .cart p {
+  font-size: 1rem;
   padding-top: 4px;
   margin-bottom: 0;
-}
-
-.main {
-  margin: 1px;
 }
 
 /* cart */
@@ -140,7 +129,7 @@ export default {
   background: #ffffff;
   box-shadow: 0px 4px 1px rgba(0, 0, 0, 0.25);
   text-align: center;
-  /* height: 800px; */
+  /* padding: 25px 10px; */
 }
 
 .cart-img {
@@ -149,17 +138,17 @@ export default {
 }
 
 .cart-body {
-  margin-top: -50px;
+  margin-top: 0px;
 }
 
 .cart-body h2 {
-  font-size: 25px;
+  font-size: 1.2rem;
   line-height: 39px;
   color: #000000;
 }
 
-span.text-muted {
-  font-size: 20px;
+span.text {
+  font-size: 0.9rem;
   line-height: 26px;
 }
 </style>
