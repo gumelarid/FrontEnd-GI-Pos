@@ -1,4 +1,4 @@
-# frontend
+# GI Pos
 
 LINK DEMO : https://pedantic-ritchie-bf3cef.netlify.app/
 
