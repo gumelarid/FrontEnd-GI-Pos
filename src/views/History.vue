@@ -64,7 +64,9 @@
         <b-col md="12" sm="12" cols="12">
           <div class="recent-order">
             <p class="text-left pl-5 pt-2" style=" font-size: 0.9rem;">Revenue</p>
-            <div class="card-body" style="padding-top: 0;"></div>
+            <div class="card-body" style="padding-top: 0;">
+              <line-chart :data="{'2017-01-01': 11, '2017-01-02': 6}"></line-chart>
+            </div>
           </div>
         </b-col>
         <b-col md="12" sm="12" cols="12" class="recent">

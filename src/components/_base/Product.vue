@@ -150,17 +150,20 @@ export default {
 
     // search
     searchProduct() {
-      if (!this.keyword.length <= 0) {
+      if (this.keyword === '') {
+        this.getProduct()
+        this.showPagination = true
+      } else {
         axios
           .get(`http://127.0.0.1:3001/product/search?keyword=${this.keyword}`)
           .then((response) => {
             this.showPagination = false
             this.product = response.data.data[0]
             this.dataFound = response.data.msg
-            this.keyword = ''
           })
-      } else {
-        this.getProduct()
+          .catch((error) => {
+            console.log(error)
+          })
       }
     },
 
