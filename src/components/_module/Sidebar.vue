@@ -1,5 +1,9 @@
 <template>
   <b-sidebar width="max-content" id="sidebar" backdrop shadow no-header-close>
+    <div class="px-3 py-2">
+      <h3>GI - POS</h3>
+    </div>
+    <hr />
     <div class="navigation px-3 py-2">
       <router-link to="/" class="nav-link">
         <b-icon icon="book" style="height:26px; width:26px;"></b-icon>
@@ -44,6 +48,7 @@ export default {
 }
 
 .nav-link {
+  font-size: 1rem;
   margin: 2px 0;
   padding: 5px 10px;
   box-sizing: border-box;

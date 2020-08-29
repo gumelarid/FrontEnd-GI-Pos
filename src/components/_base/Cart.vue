@@ -1,14 +1,14 @@
 <template>
   <div>
-    <div class="item-order" v-for="(value, index) in itemCart" :key="index">
-      <img src="https://picsum.photos/250/250/?image=54" alt="...." width="100px" height="100px" />
+    <div class="item-order" v-for="(value, index) in itemOrder" :key="index">
+      <img src="@/assets/img/product/bear.png" alt="...." width="100px" height="100px" />
       <div class="selected-items">
         <p>{{value.product_name}}</p>
 
         <div class="quantity">
           <b-button-group size="sm">
-            <b-button v-if="value.qty == 1" variant="outline-warning">
-              <b-icon variant="dark" icon="dash"></b-icon>
+            <b-button v-if="value.qty == 1" variant="outline-warning" @click="deleteOrder(value)">
+              <b-icon variant="dark" icon="trash"></b-icon>
             </b-button>
             <b-button v-else variant="outline-warning" @click="decrement(value)">
               <b-icon variant="dark" icon="dash"></b-icon>
@@ -43,7 +43,7 @@
         v-on:click="checkout()"
         v-b-modal.modal-checkout
       >Checkout</button>
-      <button type="button" @click="emptyCart()" class="btn btn-cancels">Cancel</button>
+      <button type="button" @click="cancelOrder()" class="btn btn-cancels">Cancel</button>
     </div>
 
     <!-- modal product-->
@@ -83,7 +83,7 @@
       </div>
       <div class="modal-footer">
         <button class="btn btn-print">Print</button>
-        <p>Or</p>
+        <hr />
         <button class="btn btn-email">Send Email</button>
       </div>
     </b-modal>
@@ -94,7 +94,7 @@
 import axios from 'axios'
 export default {
   name: 'cart',
-  props: ['itemCart'],
+  props: ['itemOrder'],
   data() {
     return {
       message: '',
@@ -106,26 +106,32 @@ export default {
   },
   methods: {
     increment(data) {
-      const cekData = this.itemCart.findIndex(
+      const cekData = this.itemOrder.findIndex(
         (value) => value.product_id === data.product_id
       )
-      this.itemCart[cekData].qty += 1
+      this.itemOrder[cekData].qty += 1
     },
     decrement(data) {
-      const cekData = this.itemCart.findIndex(
+      const cekData = this.itemOrder.findIndex(
         (value) => value.product_id === data.product_id
       )
-      this.itemCart[cekData].qty -= 1
+      this.itemOrder[cekData].qty -= 1
+    },
+    deleteOrder(data) {
+      const getIndex = this.itemOrder.findIndex(
+        (value) => value.product_id === data.product_id
+      )
+      this.itemOrder.splice(getIndex, 1)
     },
     totalPrice() {
       let priceTotal = 0
-      for (let i = 0; i < this.itemCart.length; i++) {
-        priceTotal += this.itemCart[i].product_price * this.itemCart[i].qty
+      for (let i = 0; i < this.itemOrder.length; i++) {
+        priceTotal += this.itemOrder[i].product_price * this.itemOrder[i].qty
       }
       return priceTotal
     },
     checkout() {
-      this.itemCart.map((value) => {
+      this.itemOrder.map((value) => {
         const orderData = {
           product_id: value.product_id,
           qty: value.qty
@@ -144,8 +150,8 @@ export default {
         this.subTotal = result.data.data.subtotal
       })
     },
-    emptyCart(e) {
-      this.$emit('clearCart', e)
+    cancelOrder() {
+      this.$emit('clearOrder')
     }
   }
 }
@@ -188,6 +194,10 @@ export default {
 span.text-muted {
   font-size: 20px;
   line-height: 26px;
+}
+
+.selected-items p {
+  text-align: left;
 }
 
 /* modalAdd */
@@ -379,6 +389,9 @@ span.text-muted {
 
 /* // Medium devices (tablets, less than 992px) */
 @media (min-width: 768px) and (max-width: 991.98px) {
+  .selected-items p {
+    text-align: center;
+  }
   .cart-item .cart-body {
     margin-top: 2px;
   }
