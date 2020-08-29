@@ -4,41 +4,46 @@
     <b-button size="sm" variant="outline-primary" v-b-modal.modal-product>
       <b-icon icon="plus"></b-icon>Add
     </b-button>
-
-    <!-- table -->
-    <table class="table text-center">
-      <thead style="border-bottom: 1px solid black;">
-        <tr>
-          <th scope="col">Product Name</th>
-          <th scope="col">Category Name</th>
-          <th scope="col">Price</th>
-          <th scope="col">Action</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="(value,index) in product" :key="index">
-          <td class="text-muted">{{value.product_name}}</td>
-          <td class="text-muted">{{value.category_name}}</td>
-          <td class="text-muted">
-            Rp. {{value.product_price.toString()
-            .replace(/\B(?=(\d{3})+(?!\d))/g, '.')}}
-          </td>
-          <td>
-            <b-button
-              size="sm"
-              variant="outline-info"
-              v-b-modal.modal-product
-              @click="setProduct(value)"
-            >
-              <b-icon icon="pencil-square"></b-icon>
-            </b-button>|
-            <b-button size="sm" variant="outline-danger" @click="deleteProduct(value)">
-              <b-icon icon="trash"></b-icon>
-            </b-button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="table-responsive">
+      <!-- table -->
+      <table class="table text-center">
+        <thead style="border-bottom: 1px solid black;">
+          <tr>
+            <th scope="cols">Product Name</th>
+            <th scope="cols">Category Name</th>
+            <th scope="cols">Price</th>
+            <th scope="cols">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(value, index) in product" :key="index">
+            <td class="text-muted">{{ value.product_name }}</td>
+            <td class="text-muted">{{ value.category_name }}</td>
+            <td class="text-muted">
+              Rp.
+              {{
+              value.product_price
+              .toString()
+              .replace(/\B(?=(\d{3})+(?!\d))/g, '.')
+              }}
+            </td>
+            <td>
+              <b-button
+                size="sm"
+                variant="outline-info"
+                v-b-modal.modal-product
+                @click="setProduct(value)"
+              >
+                <b-icon icon="pencil-square"></b-icon>
+              </b-button>|
+              <b-button size="sm" variant="outline-danger" @click="deleteProduct(value)">
+                <b-icon icon="trash"></b-icon>
+              </b-button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
 
     <!-- pagination -->
     <b-pagination
@@ -251,5 +256,86 @@ export default {
   }
 }
 </script>
-<style scoped src="@/assets/css/style.css">
+<style scoped>
+/* recent order */
+.recent-order {
+  margin: 10px 5px;
+  border-radius: 10px;
+}
+
+.recent-order th {
+  font-size: 1rem;
+  line-height: 20px;
+  letter-spacing: 0.1em;
+}
+
+.recent-order .text-muted {
+  font-size: 1rem;
+}
+/* modalAdd */
+.modal-body form input {
+  border: 1px solid #cecece;
+  box-sizing: border-box;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.25);
+  border-radius: 10px;
+}
+
+.modal-body .price {
+  width: 270px;
+  border: 1px solid #cecece;
+  box-sizing: border-box;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.25);
+  border-radius: 10px;
+}
+
+.modal-body form select {
+  width: 200px;
+  border: 1px solid #cecece;
+  box-sizing: border-box;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.25);
+  border-radius: 10px;
+}
+
+.btn-add {
+  width: 80px;
+  border-radius: 100px;
+  background-color: #57cad5;
+  color: #ffffff;
+}
+
+.btn-cancel {
+  width: 80px;
+  border-radius: 100px;
+  background-color: #f24f8a;
+  color: #ffffff;
+}
+
+@media (max-width: 767px) {
+  .recent-order {
+    margin: 5px 0px;
+  }
+  .recent-order th {
+    font-size: 0.7rem;
+  }
+
+  .recent-order .text-muted {
+    font-size: 0.7rem;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 991.98px) {
+  .recent-order {
+    margin: 10px 0px;
+  }
+  .revenue {
+    margin: 10px 50px;
+  }
+  .recent-order th {
+    font-size: 0.7rem;
+  }
+
+  .recent-order .text-muted {
+    font-size: 0.7rem;
+  }
+}
 </style>

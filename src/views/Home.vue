@@ -2,7 +2,7 @@
   <div>
     <b-container fluid>
       <b-row>
-        <b-col md="9" class="header-title">
+        <b-col md="8" class="header-title">
           <div class="list" v-b-toggle.sidebar>
             <b-icon icon="list" style="width: 26px; height: 26px;"></b-icon>
           </div>
@@ -10,7 +10,7 @@
             <p>Food Items</p>
           </div>
         </b-col>
-        <b-col md="3" class="cart">
+        <b-col md="4" class="cart">
           <p>
             Cart
             <b-badge pill variant="primary">{{ count }}</b-badge>
@@ -21,10 +21,10 @@
     <Sidebar />
     <b-container fluid style="padding-left:0; padding-right:0;">
       <b-row class="main">
-        <b-col md="9" class="items">
+        <b-col md="8" class="items">
           <Product :clearCart="reset" @itemCart="cart" />
         </b-col>
-        <b-col md="3" class="cart-item">
+        <b-col md="4" class="cart-item">
           <div v-if="count <= 0">
             <img class="cart-img" src="../assets/img/icon/cart.png" alt="...." />
             <div class="cart-body">

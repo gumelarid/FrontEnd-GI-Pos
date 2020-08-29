@@ -19,13 +19,11 @@
               <b-icon variant="dark" icon="plus"></b-icon>
             </b-button>
           </b-button-group>
+          <span class="price">
+            Rp.{{(value.product_price * value.qty).toString()
+            .replace(/\B(?=(\d{3})+(?!\d))/g, '.')}}
+          </span>
         </div>
-      </div>
-      <div class="price">
-        <p>
-          Rp.{{(value.product_price * value.qty).toString()
-          .replace(/\B(?=(\d{3})+(?!\d))/g, '.')}}
-        </p>
       </div>
     </div>
     <hr />
@@ -154,8 +152,85 @@ export default {
 </script>
 
 <style scoped>
+/* -- order-quantity -- */
+.quantity {
+  padding-top: 10px;
+  display: inline-block;
+}
+.input-qty {
+  width: 35px;
+  text-align: center;
+}
+
+/* cart */
+.cart-item {
+  background: #ffffff;
+  box-shadow: 0px 4px 1px rgba(0, 0, 0, 0.25);
+  text-align: center;
+  height: 800px;
+}
+
+.cart-img {
+  margin-top: 20px;
+  width: 60%;
+}
+
+.cart-body {
+  margin-top: -50px;
+}
+
+.cart-body h2 {
+  font-size: 25px;
+  line-height: 39px;
+  color: #000000;
+}
+
+span.text-muted {
+  font-size: 20px;
+  line-height: 26px;
+}
+
+/* modalAdd */
+.modal-body form input {
+  border: 1px solid #cecece;
+  box-sizing: border-box;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.25);
+  border-radius: 10px;
+}
+
+.modal-body .price {
+  width: 270px;
+  border: 1px solid #cecece;
+  box-sizing: border-box;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.25);
+  border-radius: 10px;
+}
+
+.modal-body form select {
+  width: 200px;
+  border: 1px solid #cecece;
+  box-sizing: border-box;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.25);
+  border-radius: 10px;
+}
+
+.btn-add {
+  width: 80px;
+  border-radius: 100px;
+  background-color: #57cad5;
+  color: #ffffff;
+}
+
+.btn-cancel {
+  width: 80px;
+  border-radius: 100px;
+  background-color: #f24f8a;
+  color: #ffffff;
+}
+
 /* product select */
 .item-order {
+  font-size: 0.9rem;
   margin: 20px;
   padding: 0 20px;
   display: flex;
@@ -168,17 +243,8 @@ export default {
   border-radius: 10px;
 }
 
-/* -- order-quantity -- */
-.quantity {
-  display: inline-block;
-}
-.input-qty {
-  width: 35px;
-  text-align: center;
-}
-
 .price {
-  padding-top: 50px;
+  margin-left: 10px;
 }
 
 /* checkout */
@@ -193,6 +259,7 @@ export default {
 }
 
 .total {
+  font-size: 0.9rem;
   display: flex;
   justify-content: space-between;
 }
@@ -212,5 +279,204 @@ export default {
   width: 100%;
   background: #f24f8a;
   color: #ffffff;
+}
+
+/* modalCheckout */
+#modalCheckout .modal-header {
+  border-bottom-width: none;
+}
+
+.modal-cashier {
+  margin-top: -15px;
+  padding: 0 16px;
+}
+
+.menu-item-order {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.ppn-order {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+#modalCheckout .modal-content .modal-footer {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+}
+
+#modalCheckout .modal-footer p {
+  margin: 10px 5px;
+}
+
+.btn-print {
+  width: 100%;
+  background: #f24f8a;
+  color: #ffffff;
+}
+
+.btn-email {
+  width: 100%;
+  background: #57cad5;
+  color: #ffffff;
+}
+
+@media (max-width: 767px) {
+  nav {
+    min-height: min-content;
+  }
+
+  .cart-item {
+    height: max-content;
+  }
+  #modalCheckout .modal-header {
+    display: flex;
+    flex-direction: column;
+  }
+  main .col-md-8 {
+    padding-left: 28px;
+  }
+  .product-items {
+    padding: 0;
+  }
+
+  nav {
+    position: fixed;
+    height: fit-content;
+    top: 20%;
+  }
+  .cart-item {
+    padding: 50px 5px;
+  }
+
+  main .revenue {
+    left: -50px;
+  }
+
+  main .chart {
+    width: 100%;
+  }
+
+  main .recent-order {
+    margin-left: 0px;
+    width: 100%;
+  }
+
+  .item-order {
+    font-size: 15px;
+    padding-left: 0px;
+    padding-right: 0px;
+  }
+
+  .search:hover > .search-txt {
+    width: 100px;
+  }
+}
+
+/* // Medium devices (tablets, less than 992px) */
+@media (min-width: 768px) and (max-width: 991.98px) {
+  .cart-item .cart-body {
+    margin-top: 2px;
+  }
+
+  .cart-body h2 {
+    font-size: 20px;
+    line-height: 25px;
+  }
+  .cart-body span.text {
+    font-size: 13px;
+    line-height: 18px;
+  }
+
+  .card-history {
+    flex-wrap: unset;
+  }
+  .income {
+    width: 200px;
+    height: 120px;
+    padding: 0;
+  }
+
+  .order {
+    width: 200px;
+    height: 120px;
+    padding: 0;
+  }
+
+  .total-income {
+    width: 200px;
+    height: 120px;
+    padding: 0;
+  }
+
+  .item-order {
+    padding: 2px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .item-order img {
+    margin: auto;
+    width: 100px;
+    height: 100px;
+    border-radius: 10px;
+  }
+  .price {
+    padding-top: 1px;
+  }
+
+  .checkout {
+    margin: 0;
+    padding: 0;
+  }
+}
+
+/* Large devices (desktops, less than 1200px) */
+@media (min-width: 1000px) and (max-width: 1199.98px) {
+  main .product-items {
+    height: 580px;
+    overflow: scroll;
+  }
+
+  .income {
+    width: 250px;
+    padding: 0;
+  }
+
+  .order {
+    width: 250px;
+    padding: 0;
+  }
+
+  .total-income {
+    width: 250px;
+    padding: 0;
+  }
+
+  .item-order {
+    margin: 15px 0;
+    padding: 0px;
+  }
+
+  .quantity .input-text.qty {
+    width: 30px;
+    height: 30px;
+  }
+
+  .quantity.buttons_added .minus,
+  .quantity.buttons_added .plus {
+    padding: 0 8px;
+    height: 30px;
+    height: 30px;
+  }
+
+  .checkout {
+    margin: 10px 0;
+    padding: 0;
+  }
 }
 </style>

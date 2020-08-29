@@ -16,20 +16,20 @@
     <b-container fluid style="padding-left:0; padding-right:0;">
       <b-row class="main">
         <b-col md="12">
-          <b-container>
-            <div class="my-5">
+          <div class="my-5" sm="12" cols="12">
+            <b-container>
               <b-card no-body>
                 <b-tabs pills card>
-                  <b-tab title="Product" active>
+                  <b-tab title="Product" active style="font-size: 1rem;">
                     <Table />
                   </b-tab>
-                  <b-tab title="Category">
+                  <b-tab title="Category" style="font-size: 1rem;">
                     <Category />
                   </b-tab>
                 </b-tabs>
               </b-card>
-            </div>
-          </b-container>
+            </b-container>
+          </div>
         </b-col>
       </b-row>
     </b-container>
@@ -71,6 +71,7 @@ export default {
 }
 
 .title p {
+  font-size: 1rem;
   line-height: 25px;
   margin-bottom: 0;
 }
@@ -79,52 +80,15 @@ export default {
   margin: 1px;
 }
 
-.main .items {
-  text-align: center;
-  padding: 20px 5px;
-  font-size: 1rem;
+@media (max-width: 767px) {
+  .main .items {
+    font-size: 0.7rem;
+  }
 }
 
-.main .product-items {
-  margin-bottom: 20px;
-  margin-left: 0;
-  margin-right: 0;
-  padding: 5px 2px;
-}
-.modal-body form input {
-  border: 1px solid #cecece;
-  box-sizing: border-box;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.25);
-  border-radius: 10px;
-}
-
-.modal-body .price {
-  width: 270px;
-  border: 1px solid #cecece;
-  box-sizing: border-box;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.25);
-  border-radius: 10px;
-}
-
-.modal-body form select {
-  width: 200px;
-  border: 1px solid #cecece;
-  box-sizing: border-box;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.25);
-  border-radius: 10px;
-}
-
-.btn-add {
-  width: 80px;
-  border-radius: 100px;
-  background-color: #57cad5;
-  color: #ffffff;
-}
-
-.btn-cancel {
-  width: 80px;
-  border-radius: 100px;
-  background-color: #f24f8a;
-  color: #ffffff;
+@media (min-width: 768px) and (max-width: 991.98px) {
+  .main .items {
+    font-size: 1rem;
+  }
 }
 </style>

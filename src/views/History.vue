@@ -22,8 +22,10 @@
                 <p>Today's Income</p>
                 <p>
                   <strong>
-                    Rp. {{incomeDay.toString()
-                    .replace(/\B(?=(\d{3})+(?!\d))/g, '.')}}
+                    Rp.
+                    {{
+                      incomeDay.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')
+                    }}
                   </strong>
                 </p>
                 <p>
@@ -36,8 +38,11 @@
                 <p>Order</p>
                 <p>
                   <strong>
-                    {{totalOrders.toString()
-                    .replace(/\B(?=(\d{3})+(?!\d))/g, '.')}}
+                    {{
+                      totalOrders
+                        .toString()
+                        .replace(/\B(?=(\d{3})+(?!\d))/g, '.')
+                    }}
                   </strong>
                 </p>
                 <p>
@@ -50,8 +55,12 @@
                 <p>This Year's Income</p>
                 <p>
                   <strong>
-                    Rp. {{incomeYear.toString()
-                    .replace(/\B(?=(\d{3})+(?!\d))/g, '.')}}
+                    Rp.
+                    {{
+                      incomeYear
+                        .toString()
+                        .replace(/\B(?=(\d{3})+(?!\d))/g, '.')
+                    }}
                   </strong>
                 </p>
                 <p>
@@ -63,14 +72,21 @@
         </b-col>
         <b-col md="12" sm="12" cols="12">
           <div class="recent-order">
-            <p class="text-left pl-5 pt-2" style=" font-size: 0.9rem;">Revenue</p>
+            <h3 class="text-left pl-4 pt-3" style=" font-size: 1rem;">
+              Revenue
+            </h3>
             <div class="card-body" style="padding-top: 0;">
-              <line-chart :data="{'2017-01-01': 11, '2017-01-02': 6}"></line-chart>
+              <line-chart
+                :data="{ '2017-01-01': 11, '2017-01-02': 6 }"
+              ></line-chart>
             </div>
           </div>
         </b-col>
         <b-col md="12" sm="12" cols="12" class="recent">
           <div class="recent-order">
+            <h3 class="text-left pl-4 pt-3" style=" font-size:1rem;">
+              Recent Orders
+            </h3>
             <div class="card-body table-responsive">
               <table class="table">
                 <thead style="border-bottom: 1px solid black;">
@@ -83,26 +99,27 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-for="(value,index) in data" :key="index">
-                    <td class="text-muted">#{{value.invoice}}</td>
+                  <tr v-for="(value, index) in data" :key="index">
+                    <td class="text-muted">#{{ value.invoice }}</td>
                     <td class="text-muted">Chasier 1</td>
-                    <td class="text-muted">{{value.date}}</td>
-                    <td class="text-muted">{{value.order}}</td>
-                    <td class="text-muted">Rp. {{value.total}}</td>
+                    <td class="text-muted">{{ value.date }}</td>
+                    <td class="text-muted">{{ value.order }}</td>
+                    <td class="text-muted">Rp. {{ value.total }}</td>
                   </tr>
                 </tbody>
               </table>
-              <!-- pagination -->
-              <b-pagination
-                v-model="page"
-                :per-page="limit"
-                :total-rows="totalData"
-                @change="pageChange"
-                v-show="showPagination"
-                align="center"
-                aria-controls="my-items"
-              ></b-pagination>
             </div>
+            <!-- pagination -->
+            <b-pagination
+              class="pb-2"
+              v-model="page"
+              :per-page="limit"
+              :total-rows="totalData"
+              @change="pageChange"
+              v-show="showPagination"
+              align="center"
+              aria-controls="my-items"
+            ></b-pagination>
           </div>
         </b-col>
       </b-row>
@@ -141,30 +158,30 @@ export default {
     getIncomeDay() {
       axios
         .get('http://127.0.0.1:3001/history/income')
-        .then((response) => {
+        .then(response => {
           this.incomeDay = response.data.data.incomeDay
         })
-        .catch((error) => {
+        .catch(error => {
           console.log(error)
         })
     },
     getOrderWeek() {
       axios
         .get('http://127.0.0.1:3001/history/count')
-        .then((response) => {
+        .then(response => {
           this.totalOrders = response.data.data.totalOrders
         })
-        .catch((error) => {
+        .catch(error => {
           console.log(error)
         })
     },
     getIncomeYear() {
       axios
         .get('http://127.0.0.1:3001/history/total')
-        .then((response) => {
+        .then(response => {
           this.incomeYear = response.data.data.incomeYear
         })
-        .catch((error) => {
+        .catch(error => {
           console.log(error)
         })
     },
@@ -175,15 +192,15 @@ export default {
         .get(
           `http://127.0.0.1:3001/history?limit=${this.limit}&page=${this.page}`
         )
-        .then((response) => {
+        .then(response => {
           this.history = response.data.data
           this.totalData = response.data.pagination.totalData
 
-          this.history.map((value) => {
+          this.history.map(value => {
             const setData = {
               invoice: value.invoice,
               date: value.history_created_at.slice(0, 10),
-              order: value.orders.map((item) => item.product_name).join(', '),
+              order: value.orders.map(item => item.product_name).join(', '),
               total: value.subtotal
                 .toString()
                 .replace(/\B(?=(\d{3})+(?!\d))/g, '.')
@@ -191,7 +208,7 @@ export default {
             this.data = [...this.data, setData]
           })
         })
-        .catch((error) => {
+        .catch(error => {
           console.log(error)
         })
     },
@@ -307,16 +324,16 @@ export default {
 }
 
 .recent-order th {
-  font-size: 0.9rem;
+  font-size: 1rem;
   line-height: 20px;
   letter-spacing: 0.1em;
 }
 
 .recent-order .text-muted {
-  font-size: 0.9rem;
+  font-size: 1rem;
 }
 
-@media (min-width: 767px) {
+@media (max-width: 767px) {
   .card-history .card-body p {
     margin: 0;
     font-size: 0.9rem;
@@ -336,7 +353,7 @@ export default {
     padding: 5px 5px;
   }
   .recent-order {
-    margin: 10px 50px;
+    margin: 5px 15px;
   }
   .recent-order th {
     font-size: 0.7rem;

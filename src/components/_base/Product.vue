@@ -1,16 +1,15 @@
 <template>
   <div>
-    <b-input-group style="margin:auto">
-      <!-- search -->
-      <b-nav-form v-on:submit.prevent="searchProduct">
-        <b-form-input v-model="keyword" class="mr-sm-2" placeholder="Search Product......."></b-form-input>
-        <b-button variant="primary" class="my-2 my-sm-0" type="submit">
-          <b-icon icon="search"></b-icon>
-        </b-button>
-      </b-nav-form>
-
+    <b-input-group class="mb-3 mt-2">
+      <b-input-group class="mb-2">
+        <b-form-input v-model="keyword" placeholder="Search Product......." class="form-control"></b-form-input>
+        <b-input-group-append>
+          <b-button @click="searchProduct()" variant="info" type="submit">
+            <span>Search</span>
+          </b-button>
+        </b-input-group-append>
+      </b-input-group>
       <!-- sort -->
-
       <b-dropdown id="sort" text="Product Name" class="m-2" variant="outline-primary">
         <b-dropdown-group id="dropdown-group-1" header="Product Name">
           <b-dropdown-item-button @click="sortNameASC()">A-Z</b-dropdown-item-button>
@@ -31,13 +30,15 @@
       </b-dropdown>
     </b-input-group>
 
-    <div v-if="(showPagination === false)" class="text-center text-item">{{ dataFound }}</div>
+    <!-- search -->
+
+    <div v-if="(!dataFound == 0)" class="text-center text-item">{{ dataFound }}</div>
 
     <!-- product -->
     <b-row class="product-items">
       <b-col
         id="my-items"
-        col="true"
+        cols="6"
         md="6"
         lg="4"
         class="item"
@@ -46,7 +47,7 @@
       >
         <img
           class="card-img-top"
-          src="https://picsum.photos/250/250/?image=54"
+          src="@/assets/img/product/bear.png"
           alt="...."
           style="max-height:180px;"
         />
@@ -65,10 +66,16 @@
               type="button"
               @click="addToCart(value)"
             >
-              <b-icon icon="cart4"></b-icon>
+              <span>
+                Add Cart
+                <b-icon icon="cart4"></b-icon>
+              </span>
             </b-button>
             <b-button v-else variant="success" type="button" @click="removeFromCart(value)">
-              <b-icon icon="cart3"></b-icon>
+              <span>
+                Remove
+                <b-icon icon="cart3"></b-icon>
+              </span>
             </b-button>
           </div>
         </div>
@@ -162,7 +169,12 @@ export default {
             this.dataFound = response.data.msg
           })
           .catch((error) => {
-            console.log(error)
+            if (error) {
+              alert((this.dataFound = 'Sorry Data Not Found'))
+              this.dataFound = 0
+              this.getProduct()
+              this.showPagination = false
+            }
           })
       }
     },
@@ -238,21 +250,31 @@ export default {
   padding: 5px 5px;
   border-radius: 0 0 10px 10px;
   box-shadow: 0px 5px 5px rgba(0, 0, 0, 0.25);
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  align-content: space-between;
 }
 .text-item {
-  flex: 2;
   font-size: 0.9rem;
 }
 .button-add {
-  flex: 1;
-  text-align: right;
+  text-align: center;
 }
 .card-img-top {
   max-height: 180px;
   object-fit: cover;
+}
+@media (max-width: 500px) {
+  .text-item {
+    font-size: 0.7rem;
+  }
+  .button-add span {
+    font-size: 0.7rem;
+  }
+}
+@media (min-width: 1000px) and (max-width: 1024px) {
+  .text-item {
+    font-size: 0.7rem;
+  }
+  .button-add span {
+    font-size: 0.7rem;
+  }
 }
 </style>
