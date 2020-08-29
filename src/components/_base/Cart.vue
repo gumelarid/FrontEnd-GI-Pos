@@ -82,9 +82,9 @@
         <p>Payment : Cash</p>
       </div>
       <div class="modal-footer">
-        <button class="btn btn-print">Print</button>
+        <button class="btn btn-print" @click="cancelOrder()">Print</button>
         <hr />
-        <button class="btn btn-email">Send Email</button>
+        <button class="btn btn-email" @click="cancelOrder()">Send Email</button>
       </div>
     </b-modal>
   </div>

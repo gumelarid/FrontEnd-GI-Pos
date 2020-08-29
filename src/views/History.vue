@@ -24,7 +24,7 @@
                   <strong>
                     Rp.
                     {{
-                      incomeDay.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')
+                    incomeDay.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')
                     }}
                   </strong>
                 </p>
@@ -39,9 +39,9 @@
                 <p>
                   <strong>
                     {{
-                      totalOrders
-                        .toString()
-                        .replace(/\B(?=(\d{3})+(?!\d))/g, '.')
+                    totalOrders
+                    .toString()
+                    .replace(/\B(?=(\d{3})+(?!\d))/g, '.')
                     }}
                   </strong>
                 </p>
@@ -57,9 +57,9 @@
                   <strong>
                     Rp.
                     {{
-                      incomeYear
-                        .toString()
-                        .replace(/\B(?=(\d{3})+(?!\d))/g, '.')
+                    incomeYear
+                    .toString()
+                    .replace(/\B(?=(\d{3})+(?!\d))/g, '.')
                     }}
                   </strong>
                 </p>
@@ -72,21 +72,15 @@
         </b-col>
         <b-col md="12" sm="12" cols="12">
           <div class="recent-order">
-            <h3 class="text-left pl-4 pt-3" style=" font-size: 1rem;">
-              Revenue
-            </h3>
+            <h3 class="text-left pl-4 pt-3" style=" font-size: 1rem;">Revenue</h3>
             <div class="card-body" style="padding-top: 0;">
-              <line-chart
-                :data="{ '2017-01-01': 11, '2017-01-02': 6 }"
-              ></line-chart>
+              <line-chart :data="chartOrder"></line-chart>
             </div>
           </div>
         </b-col>
         <b-col md="12" sm="12" cols="12" class="recent">
           <div class="recent-order">
-            <h3 class="text-left pl-4 pt-3" style=" font-size:1rem;">
-              Recent Orders
-            </h3>
+            <h3 class="text-left pl-4 pt-3" style=" font-size:1rem;">Recent Orders</h3>
             <div class="card-body table-responsive">
               <table class="table">
                 <thead style="border-bottom: 1px solid black;">
@@ -145,7 +139,13 @@ export default {
       totalOrders: 0,
       incomeYear: 0,
       history: [],
-      data: []
+      data: [],
+      chartOrder: []
+      // {
+      //   '2017-01-01': 11,
+      //   '2017-01-02': 6,
+      //   '2017-01-03': 11
+      // }
     }
   },
   created() {
@@ -153,35 +153,50 @@ export default {
     this.getIncomeDay()
     this.getOrderWeek()
     this.getIncomeYear()
+    this.getChartOrderWeek()
   },
   methods: {
+    getChartOrderWeek() {
+      axios
+        .get('http://127.0.0.1:3001/history/chart')
+        .then((response) => {
+          const setData = response.data.data
+          for (let i = 0; i < setData.length; i++) {
+            this.chartOrder.push([setData[i].date, setData[i].total])
+          }
+        })
+        .catch((error) => {
+          console.log(error)
+        })
+    },
+
     getIncomeDay() {
       axios
         .get('http://127.0.0.1:3001/history/income')
-        .then(response => {
+        .then((response) => {
           this.incomeDay = response.data.data.incomeDay
         })
-        .catch(error => {
+        .catch((error) => {
           console.log(error)
         })
     },
     getOrderWeek() {
       axios
         .get('http://127.0.0.1:3001/history/count')
-        .then(response => {
+        .then((response) => {
           this.totalOrders = response.data.data.totalOrders
         })
-        .catch(error => {
+        .catch((error) => {
           console.log(error)
         })
     },
     getIncomeYear() {
       axios
         .get('http://127.0.0.1:3001/history/total')
-        .then(response => {
+        .then((response) => {
           this.incomeYear = response.data.data.incomeYear
         })
-        .catch(error => {
+        .catch((error) => {
           console.log(error)
         })
     },
@@ -192,23 +207,38 @@ export default {
         .get(
           `http://127.0.0.1:3001/history?limit=${this.limit}&page=${this.page}`
         )
-        .then(response => {
+        .then((response) => {
           this.history = response.data.data
           this.totalData = response.data.pagination.totalData
-
-          this.history.map(value => {
-            const setData = {
-              invoice: value.invoice,
-              date: value.history_created_at.slice(0, 10),
-              order: value.orders.map(item => item.product_name).join(', '),
-              total: value.subtotal
-                .toString()
-                .replace(/\B(?=(\d{3})+(?!\d))/g, '.')
-            }
-            this.data = [...this.data, setData]
-          })
+          if (this.limit > this.totalData) {
+            this.history.map((value) => {
+              const setData = {
+                invoice: value.invoice,
+                date: value.history_created_at.slice(0, 10),
+                order: value.orders.map((item) => item.product_name).join(', '),
+                total: value.subtotal
+                  .toString()
+                  .replace(/\B(?=(\d{3})+(?!\d))/g, '.')
+              }
+              this.showPagination = false
+              this.data = [...this.data, setData]
+            })
+          } else {
+            this.history.map((value) => {
+              const setData = {
+                invoice: value.invoice,
+                date: value.history_created_at.slice(0, 10),
+                order: value.orders.map((item) => item.product_name).join(', '),
+                total: value.subtotal
+                  .toString()
+                  .replace(/\B(?=(\d{3})+(?!\d))/g, '.')
+              }
+              this.showPagination = true
+              this.data = [...this.data, setData]
+            })
+          }
         })
-        .catch(error => {
+        .catch((error) => {
           console.log(error)
         })
     },
