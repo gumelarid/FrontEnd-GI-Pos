@@ -1,5 +1,7 @@
 # frontend
 
+LINK DEMO : https://pedantic-ritchie-bf3cef.netlify.app/
+
 ## Project setup
 ```
 npm install
