@@ -159,6 +159,8 @@ export default {
     searchProduct() {
       if (this.keyword === '') {
         this.getProduct()
+        this.$router.push('')
+        this.dataFound = 0
         this.showPagination = true
       } else {
         axios
@@ -167,12 +169,13 @@ export default {
             this.showPagination = false
             this.product = response.data.data[0]
             this.dataFound = response.data.msg
+            this.$router.push(`?keyword=${this.keyword}`)
           })
           .catch((error) => {
             if (error) {
-              alert((this.dataFound = 'Sorry Data Not Found'))
-              this.dataFound = 0
+              this.dataFound = 'Sorry Data Not Found'
               this.getProduct()
+              this.$router.push(`?keyword=${this.keyword}`)
               this.showPagination = false
             }
           })
@@ -184,12 +187,14 @@ export default {
     sortNameASC() {
       this.sortBy = 'product_name'
       this.sort = 'ASC'
+      this.$router.push(`?orderBy=${this.sortBy}`)
       this.page = 1
       this.getProduct()
     },
     sortNameDESC() {
       this.sortBy = 'product_name'
       this.sort = 'DESC'
+      this.$router.push(`?orderBy=${this.sortBy}`)
       this.page = 1
       this.getProduct()
     },
@@ -203,6 +208,7 @@ export default {
     sortPriceDESC() {
       this.sortBy = 'product_price'
       this.sort = 'DESC'
+      this.$router.push(`?orderBy=${this.sortBy}`)
       this.page = 1
       this.getProduct()
     },
@@ -210,12 +216,14 @@ export default {
     sortDateASC() {
       this.sortBy = 'product_created_at'
       this.sort = 'ASC'
+      this.$router.push(`?orderBy=${this.sortBy}`)
       this.page = 1
       this.getProduct()
     },
     sortDateDESC() {
       this.sortBy = 'product_created_at'
       this.sort = 'DESC'
+      this.$router.push(`?orderBy=${this.sortBy}`)
       this.page = 1
       this.getProduct()
     },
@@ -223,6 +231,7 @@ export default {
     // pagination
     pageChange(value) {
       this.page = value
+      this.$router.push(`?page=${value}`)
       this.getProduct()
     },
     checkList(data) {
