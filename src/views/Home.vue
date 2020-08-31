@@ -22,42 +22,27 @@
     <b-container fluid style="padding-left:0; padding-right:0;">
       <b-row class="main">
         <b-col md="8" class="items">
-          <!-- productlist -->
-          <b-input-group class="mb-3 mt-2">
-            <b-input-group class="mb-2">
-              <b-form-input
-                v-model="keyword"
-                placeholder="Search Product......."
-                class="form-control"
-              ></b-form-input>
-              <b-input-group-append>
-                <b-button @click="searchProduct()" variant="info" type="submit">
-                  <span>Search</span>
-                </b-button>
-              </b-input-group-append>
-            </b-input-group>
-            <!-- sort -->
-            <b-dropdown id="sort" text="Product Name" class="m-2" variant="outline-primary">
+          <b-form class="m-3" v-on:submit.prevent="searchProduct" inline>
+            <b-input placeholder="Search Product ....." v-model="keyword"></b-input>
+            <b-button variant="info" type="submit" class="ml-md-2">Search</b-button>
+
+            <b-dropdown id="sort" class="m-2" variant="info" text="Sort">
               <b-dropdown-group id="dropdown-group-1" header="Product Name">
                 <b-dropdown-item-button @click="sortNameASC()">A-Z</b-dropdown-item-button>
                 <b-dropdown-item-button @click="sortNameDESC()">Z-A</b-dropdown-item-button>
               </b-dropdown-group>
-            </b-dropdown>
-            <b-dropdown id="sort" text="Price" class="m-2" variant="outline-primary">
-              <b-dropdown-group id="dropdown-group-1" header="Price">
+              <b-dropdown-divider></b-dropdown-divider>
+              <b-dropdown-group id="dropdown-group-2" header="Date">
+                <b-dropdown-item-button @click="sortDateASC()">Old Product</b-dropdown-item-button>
+                <b-dropdown-item-button @click="sortDateDESC()">New Product</b-dropdown-item-button>
+              </b-dropdown-group>
+              <b-dropdown-divider></b-dropdown-divider>
+              <b-dropdown-group id="dropdown-group-3" header="Price">
                 <b-dropdown-item-button @click="sortPriceASC()">Lowest Price</b-dropdown-item-button>
                 <b-dropdown-item-button @click="sortPriceDESC()">Highest Price</b-dropdown-item-button>
               </b-dropdown-group>
             </b-dropdown>
-            <b-dropdown id="sort" text="Date" class="m-2" variant="outline-primary">
-              <b-dropdown-group id="dropdown-group-1" header="Date">
-                <b-dropdown-item-button @click="sortDateASC()">Old Product</b-dropdown-item-button>
-                <b-dropdown-item-button @click="sortDateDESC()">New Product</b-dropdown-item-button>
-              </b-dropdown-group>
-            </b-dropdown>
-          </b-input-group>
-
-          <!-- search -->
+          </b-form>
 
           <div v-if="(!dataFound == 0)" class="text-center text-item">{{ dataFound }}</div>
 
