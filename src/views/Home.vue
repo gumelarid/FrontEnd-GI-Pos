@@ -182,7 +182,7 @@ export default {
     getProduct() {
       axios
         .get(
-          `http://127.0.0.1:3001/product?limit=${this.limit}&page=${this.page}&name=${this.sortBy}&sort=${this.sort}`
+          `${process.env.VUE_APP_URL}/product?limit=${this.limit}&page=${this.page}&name=${this.sortBy}&sort=${this.sort}`
         )
         .then((response) => {
           this.showPagination = true
