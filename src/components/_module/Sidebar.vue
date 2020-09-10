@@ -3,7 +3,7 @@
     <div class="px-3 py-2">
       <h3>GI - POS</h3>
     </div>
-    <hr />
+    <hr class="mb-5" />
     <div class="navigation px-3 py-2">
       <router-link to="/" class="nav-link">
         <b-icon icon="book" style="height:26px; width:26px;"></b-icon>
@@ -17,13 +17,23 @@
         <b-icon icon="gear" style="height:26px; width:26px;"></b-icon>
         <div class="text-link">Manage</div>
       </router-link>
+      <hr class="mt-5" />
+      <a @click="handleLogout" class="logout-link">
+        <b-icon icon="Power" style="height:26px; width:26px;"></b-icon>
+        <div class="text-link">Logout</div>
+      </a>
     </div>
   </b-sidebar>
 </template>
 
 <script>
+import { mapActions } from 'vuex'
+
 export default {
-  name: 'sidebar'
+  name: 'sidebar',
+  methods: {
+    ...mapActions({ handleLogout: 'logout' })
+  }
 }
 </script>
 
@@ -42,9 +52,31 @@ export default {
 
 .text-link {
   padding-left: 5px;
-  /* display: none; */
   align-content: center;
   align-items: center;
+}
+
+.logout-link {
+  cursor: pointer;
+  font-size: 1rem;
+  margin: 2px 0;
+  padding: 5px 10px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  align-content: center;
+  align-items: center;
+}
+
+.btn-logout {
+  border: none;
+  color: white;
+  background-color: rgb(126, 58, 58);
+}
+
+.btn-logout:hover {
+  border-radius: 10px;
+  color: black;
 }
 
 .nav-link {

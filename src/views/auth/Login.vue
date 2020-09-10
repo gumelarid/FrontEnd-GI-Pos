@@ -96,7 +96,17 @@ export default {
   padding: 10px 0;
   width: 100%;
   font-size: 1rem;
-  background-color: #3903fa;
+  border: none;
+  background-color: #a188fc;
+  color: #ffffff;
+}
+
+.btn-sign-in:hover {
+  padding: 10px 0;
+  width: 100%;
+  font-size: 1rem;
+  border: none;
+  background-color: #401dbe;
   color: #ffffff;
 }
 

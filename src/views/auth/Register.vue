@@ -1,7 +1,7 @@
 <template>
   <div class="box">
     <div class="content">
-      <h3>Wellcome</h3>
+      <h3>Register Now</h3>
       <hr />
       <b-alert :show="alert">{{ isMsg }}</b-alert>
       <form @submit.prevent="onRegister">
@@ -63,12 +63,8 @@ export default {
   methods: {
     ...mapActions(['register']),
     onRegister() {
-      // const data = new FormData()
-      // data.append('user_name', this.form.user_name)
-      // data.append('user_email', this.form.user_email)
-      // data.append('user_password', this.form.user_password)
       this.register(this.form)
-        .then((response) => {
+        .then(response => {
           console.log(response)
           this.alert = true
           this.isMsg = response.msg
@@ -79,7 +75,7 @@ export default {
           }
           this.$router.push('/login')
         })
-        .catch((error) => {
+        .catch(error => {
           this.alert = true
           this.isMsg = error.msg
         })
@@ -112,7 +108,17 @@ export default {
   padding: 10px 0;
   width: 100%;
   font-size: 1rem;
-  background-color: #3903fa;
+  border: none;
+  background-color: #a188fc;
+  color: #ffffff;
+}
+
+.btn-sign-in:hover {
+  padding: 10px 0;
+  width: 100%;
+  font-size: 1rem;
+  border: none;
+  background-color: #401dbe;
   color: #ffffff;
 }
 
