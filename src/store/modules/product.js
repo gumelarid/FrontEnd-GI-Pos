@@ -1,52 +1,59 @@
 import axios from 'axios'
 export default {
   state: {
-    totalData: 0,
+    totalData: null,
     limit: 6,
     page: 1,
     product: []
   },
   mutations: {
     setProduct(state, payload) {
-      state.product = payload
+      state.product = payload.data
+      state.totalData = payload.pagination.totalData
     },
-    setTotalData(state, payload) {
-      state.totalData = payload
-    },
-    setPage(state, payload) {
+    changePage(state, payload) {
       state.page = payload
     }
   },
   actions: {
-    getProduct(context, payload) {
+    getProducts(context) {
       axios
         .get(
           `${process.env.VUE_APP_URL}/product?limit=${context.state.limit}&page=${context.state.page}`
         )
         .then(response => {
-          //   console.log(response)
-          context.commit('setProduct', response.data.data)
-          context.commit('setTotalData', response.data.pagination.totalData)
-          //   this.product = response.data.data[0]
-          //   this.totalData = response.data.data[1].totalData
+          // //   console.log(response)
+          context.commit('setProduct', response.data)
+          // context.commit('setTotalData', response.data.pagination.totalData)
         })
         .catch(error => {
-          console.log(error)
+          console.log(error.response)
         })
+    },
+    addProducts(context, payload) {
+      return new Promise((resolve, reject) => {
+        axios
+          .post(`${process.env.VUE_APP_URL}/product`, payload)
+          .then(response => {
+            resolve(response.data)
+          })
+          .catch(error => {
+            reject(error.response)
+          })
+      })
     }
   },
   getters: {
-    setProduct(state) {
-      //   console.log(state.product)
+    getProduct(state) {
       return state.product
     },
-    setTotalData(state) {
+    getTotalData(state) {
       return state.totalData
     },
-    setLimit(state) {
+    getLimit(state) {
       return state.limit
     },
-    setPage(state) {
+    getPage(state) {
       return state.page
     }
   }

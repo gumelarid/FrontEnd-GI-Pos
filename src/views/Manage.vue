@@ -21,10 +21,10 @@
               <b-card no-body>
                 <b-tabs pills card>
                   <b-tab title="Product" active style="font-size: 1rem;">
-                    <Table />
+                    <TbProduct />
                   </b-tab>
                   <b-tab title="Category" style="font-size: 1rem;">
-                    <Category />
+                    <TbCategory />
                   </b-tab>
                 </b-tabs>
               </b-card>
@@ -38,15 +38,15 @@
 
 <script>
 import Sidebar from '../components/_module/Sidebar'
-import Table from '../components/_module/Table'
-import Category from '../components/_module/Category'
+import TbProduct from '../components/_module/TbProduct'
+import TbCategory from '../components/_module/TbCategory'
 
 export default {
   name: 'manage',
   components: {
     Sidebar,
-    Table,
-    Category
+    TbProduct,
+    TbCategory
   }
 }
 </script>
