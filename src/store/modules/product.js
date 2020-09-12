@@ -7,7 +7,8 @@ export default {
     totalData: null,
     limit: 6,
     page: 1,
-    product: []
+    product: [],
+    invoice: ''
   },
   mutations: {
     setProduct(state, payload) {
@@ -47,14 +48,13 @@ export default {
         value => value.product_id === payload.product_id
       )
       state.cart[cekData].qty -= 1
+    },
+    setInvoice(state, payload) {
+      state.invoice = payload
+    },
+    cancelOrder(state) {
+      state.cart = []
     }
-    // incrementCart(state, payload) {
-    //   const incrementData = state.cart.find(
-    //     value => value.product_id === payload.product_id
-    //   )
-    //   incrementData.product_qty += 1
-    //   incrementData.product_total = payload.product_price * payload.product_qty
-    // }
   },
   actions: {
     getProducts(context) {
@@ -79,7 +79,7 @@ export default {
             resolve(response.data)
           })
           .catch(error => {
-            reject(error.response)
+            console.log(error.response)
           })
       })
     },
@@ -109,6 +109,18 @@ export default {
             reject(error.response)
           })
       })
+    },
+    orderPost(context, payload) {
+      return new Promise((resolve, reject) => {
+        axios
+          .post(`${process.env.VUE_APP_URL}/order`, payload)
+          .then(response => {
+            context.commit('setInvoice', response.data.data.invoice)
+          })
+          .catch(error => {
+            reject(error.response)
+          })
+      })
     }
   },
   getters: {
@@ -127,12 +139,16 @@ export default {
     getCart(state) {
       return state.cart
     },
-    getTotalCart(state) {
-      let total = 0
-      state.cart.map(
-        value => (total += value.product_price * value.product_qty)
-      )
-      return total
+    getInvoice(state, payload) {
+      return state.invoice
+    },
+
+    totalPrice(state) {
+      let priceTotal = 0
+      for (let i = 0; i < state.cart.length; i++) {
+        priceTotal += state.cart[i].product_price * state.cart[i].qty
+      }
+      return priceTotal
     }
   }
 }

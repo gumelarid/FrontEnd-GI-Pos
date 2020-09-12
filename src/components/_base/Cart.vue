@@ -1,68 +1,107 @@
 <template>
   <div>
     <div class="item-order" v-for="(value, index) in cart" :key="index">
-      <img src="@/assets/img/product/bear.png" alt="...." width="100px" height="100px" />
+      <img
+        src="@/assets/img/product/bear.png"
+        alt="...."
+        width="100px"
+        height="100px"
+      />
       <div class="selected-items">
-        <p>{{value.product_name}}</p>
+        <p>{{ value.product_name }}</p>
 
         <div class="quantity">
           <b-button-group size="sm">
             <b-button v-if="value.qty == 1" variant="outline-warning">
-              <b-icon variant="dark" icon="trash"></b-icon>
+              <b-icon
+                variant="dark"
+                icon="trash"
+                @click="removeFromCart(value)"
+              ></b-icon>
             </b-button>
-            <b-button v-else variant="outline-warning" @click="decrementCart(value)">
+            <b-button
+              v-else
+              variant="outline-warning"
+              @click="decrementCart(value)"
+            >
               <b-icon variant="dark" icon="dash"></b-icon>
             </b-button>
 
-            <input class="input-qty" type="text" v-model="value.qty" min="1" max="100" />
+            <input
+              class="input-qty"
+              type="text"
+              v-model="value.qty"
+              min="1"
+              max="100"
+            />
             <b-button variant="outline-warning" @click="incrementCart(value)">
               <b-icon variant="dark" icon="plus"></b-icon>
             </b-button>
           </b-button-group>
           <span class="price">
-            Rp.{{(value.product_price * value.qty).toString()
-            .replace(/\B(?=(\d{3})+(?!\d))/g, '.')}}
+            Rp.{{
+              (value.product_price * value.qty)
+                .toString()
+                .replace(/\B(?=(\d{3})+(?!\d))/g, '.')
+            }}
           </span>
         </div>
       </div>
     </div>
     <hr />
     <!-- checkout -->
-    <!-- <div class="checkout align-text-bottom">
+    <div class="checkout align-text-bottom">
       <div class="total">
         <p>Total:</p>
         <p>
-          Rp. {{ totalPrice().toString()
-          .replace(/\B(?=(\d{3})+(?!\d))/g, '.') }}
+          Rp. {{ totalPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.') }}
         </p>
       </div>
       <p class="text-left text-muted">*Belum Termasuk PPN</p>
       <button
         type="button"
         class="btn btn-checkout"
-        v-on:click="checkout()"
+        @click="checkOut(cart)"
         v-b-modal.modal-checkout
-      >Checkout</button>
-      <button type="button" @click="cancelOrder()" class="btn btn-cancels">Cancel</button>
-    </div>-->
+      >
+        Checkout
+      </button>
+      <button type="button" @click="cancelOrder()" class="btn btn-cancels">
+        Cancel
+      </button>
+    </div>
 
-    <!-- modal product-->
-    <!-- <b-modal id="modal-checkout" ref="modal-checkout" centered :title="message" hide-footer>
+    <!-- modal product -->
+    <b-modal
+      id="modal-checkout"
+      ref="modal-checkout"
+      centered
+      title="Checkout Success!"
+      hide-footer
+    >
       <div class="modal-header">
         <h5 class="modal-title">Checkout</h5>
-        <h5 class="modal-title">Receipt no: {{invoice}}</h5>
+        <h5 class="modal-title">Receipt no: #{{ invoice }}</h5>
       </div>
       <div class="modal-cashier">
-        <small>Chasier : Pevita Pierce</small>
+        <small>Chasier : {{ user.user_name }}</small>
       </div>
       <div class="modal-body">
-        <div class="menu-item-order" v-for="(value,index) in orders" :key="index">
+        <div
+          class="menu-item-order"
+          v-for="(value, index) in cart"
+          :key="index"
+        >
           <div>
-            <strong>{{value.product_name}} x{{value.order_qty}}</strong>
+            <strong>{{ value.product_name }} x{{ value.qty }}</strong>
           </div>
           <div>
-            RP {{value.order_total.toString()
-            .replace(/\B(?=(\d{3})+(?!\d))/g, '.')}}
+            RP
+            {{
+              (value.product_price * value.qty)
+                .toString()
+                .replace(/\B(?=(\d{3})+(?!\d))/g, '.')
+            }}
           </div>
         </div>
 
@@ -71,13 +110,21 @@
             <strong>PPN 10%</strong>
           </div>
           <div>
-            RP {{(subTotal - totalPrice()).toString()
-            .replace(/\B(?=(\d{3})+(?!\d))/g, '.')}}
+            RP
+            {{
+              (totalPrice * 0.1)
+                .toString()
+                .replace(/\B(?=(\d{3})+(?!\d))/g, '.')
+            }}
           </div>
         </div>
         <p class="text-right">
-          Total : Rp. {{subTotal.toString()
-          .replace(/\B(?=(\d{3})+(?!\d))/g, '.')}}
+          Total : Rp.
+          {{
+            (totalPrice + totalPrice * 0.1)
+              .toString()
+              .replace(/\B(?=(\d{3})+(?!\d))/g, '.')
+          }}
         </p>
         <p>Payment : Cash</p>
       </div>
@@ -86,21 +133,50 @@
         <hr />
         <button class="btn btn-email" @click="cancelOrder()">Send Email</button>
       </div>
-    </b-modal>-->
+    </b-modal>
   </div>
 </template>
 
 <script>
-import { mapGetters, mapMutations } from 'vuex'
+import { mapActions, mapGetters, mapMutations } from 'vuex'
 export default {
   name: 'cart',
+  data() {
+    return {
+      dataCheckOut: []
+    }
+  },
   computed: {
     ...mapGetters({
-      cart: 'getCart'
+      user: 'getUser',
+      cart: 'getCart',
+      totalPrice: 'totalPrice',
+      invoice: 'getInvoice'
     })
   },
   methods: {
-    ...mapMutations(['incrementCart', 'decrementCart'])
+    ...mapMutations([
+      'incrementCart',
+      'decrementCart',
+      'removeFromCart',
+      'cancelOrder'
+    ]),
+    ...mapActions(['orderPost']),
+    checkOut(data) {
+      data.map(value => {
+        const orderData = {
+          product_id: value.product_id,
+          qty: value.qty
+        }
+        this.dataCheckOut = [...this.dataCheckOut, orderData]
+      })
+      const setDataOrder = {
+        user_id: this.user.user_id,
+        orders: this.dataCheckOut
+      }
+
+      this.orderPost(setDataOrder)
+    }
   }
 }
 </script>

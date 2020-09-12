@@ -3,7 +3,19 @@
     <div class="px-3 py-2">
       <h3>GI - POS</h3>
     </div>
-    <hr class="mb-5" />
+    <hr class="" />
+    <div class="profile px-3 py-2">
+      <div>
+        <span>
+          <strong>Wellcome</strong> |
+          <span class="badge badge-primary" v-if="user.user_role === 1"
+            >Admin</span
+          >
+          <span class="badge badge-success" v-else>Chasier</span>
+        </span>
+        <h5>{{ user.user_name }}</h5>
+      </div>
+    </div>
     <div class="navigation px-3 py-2">
       <router-link to="/" class="nav-link">
         <b-icon icon="book" style="height:26px; width:26px;"></b-icon>
@@ -13,7 +25,7 @@
         <b-icon icon="receipt" style="height:26px; width:26px;"></b-icon>
         <div class="text-link">History</div>
       </router-link>
-      <router-link to="/manage" class="nav-link">
+      <router-link to="/manage" class="nav-link" v-if="user.user_role === 1">
         <b-icon icon="gear" style="height:26px; width:26px;"></b-icon>
         <div class="text-link">Manage</div>
       </router-link>
@@ -27,12 +39,17 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 
 export default {
   name: 'sidebar',
   methods: {
     ...mapActions({ handleLogout: 'logout' })
+  },
+  computed: {
+    ...mapGetters({
+      user: 'getUser'
+    })
   }
 }
 </script>
@@ -42,6 +59,13 @@ export default {
   display: flex;
   flex-direction: column;
   align-content: flex-start;
+}
+
+.profile {
+  padding: 10px 10px;
+  width: max-content;
+  box-sizing: border-box;
+  font-size: 0.8rem;
 }
 
 .navigation {
