@@ -22,7 +22,7 @@
     <b-container fluid style="padding-left:0; padding-right:0;">
       <b-row class="main">
         <b-col md="8" class="items">
-          <!-- <b-form class="m-3" v-on:submit.prevent="searchProduct" inline>
+          <b-form class="m-3" v-on:submit.prevent="searchProduct" inline>
             <b-input placeholder="Search Product ....." v-model="keyword"></b-input>
             <b-button variant="info" type="submit" class="ml-md-2">Search</b-button>
 
@@ -44,7 +44,7 @@
             </b-dropdown>
           </b-form>
 
-          <div v-if="(!dataFound == 0)" class="text-center text-item">{{ dataFound }}</div>-->
+          <div v-if="(!dataFound == 0)" class="text-center text-item">{{ dataFound }}</div>
 
           <!-- product -->
           <b-row class="product-items">
@@ -54,7 +54,7 @@
               md="6"
               lg="4"
               class="item"
-              v-for="(value, indeks) in products"
+              v-for="(value, indeks) in product"
               :key="indeks"
             >
               <img
@@ -96,7 +96,7 @@
 
           <!-- pagination -->
           <b-pagination
-            v-model="currentPage"
+            v-model="page"
             :per-page="limit"
             :total-rows="totalData"
             @change="pageChange"
@@ -117,8 +117,7 @@
             </div>
           </div>
           <div v-else>
-            <!-- {{cart}} -->
-            <Cart />
+            <Cart :itemOrder="cart" @clearOrder="clearOrder" />
           </div>
         </b-col>
       </b-row>
@@ -127,9 +126,10 @@
 </template>
 
 <script>
+import axios from 'axios'
 import Cart from '../components/_base/Cart'
 import Sidebar from '../components/_module/Sidebar'
-import { mapGetters, mapActions, mapMutations } from 'vuex'
+
 export default {
   name: 'Home',
   components: {
@@ -138,34 +138,142 @@ export default {
   },
   data() {
     return {
-      showPagination: true,
-      currentPage: 1
+      sortBy: 'product_name',
+      sort: 'ASC',
+      totalData: 0,
+      limit: 6,
+      page: 1,
+      showPagination: '',
+      product: [],
+      cart: [],
+      keyword: '',
+      dataFound: 0
     }
   },
-  computed: {
-    ...mapGetters({
-      products: 'getProduct',
-      limit: 'getLimit',
-      page: 'getPage',
-      totalData: 'getTotalData',
-      cart: 'getCart'
-    })
-  },
   created() {
-    this.getProducts()
+    this.getProduct()
   },
   methods: {
-    ...mapActions(['getProducts']),
-    ...mapMutations(['changePage', 'addToCart', 'removeFromCart']),
-    pageChange(value) {
-      if (parseInt(this.$route.query.page) !== value) {
-        this.$router.push(`?page=${value}`)
+    // cart(data) {
+    //   this.order = data
+    //   this.count = this.order.length
+    // },
+    clearOrder() {
+      this.cart = []
+    },
+    // add cart
+    addToCart(data) {
+      const setCart = {
+        product_id: data.product_id,
+        product_name: data.product_name,
+        product_price: data.product_price,
+        qty: 1
       }
-      this.changePage(value)
-      this.getProducts()
+      this.cart.push(setCart)
+    },
+    // remove cart
+    removeFromCart(data) {
+      this.cart.splice(
+        this.cart.findIndex((value) => value.product_id === data.product_id),
+        1
+      )
+    },
+    // get product
+    getProduct() {
+      axios
+        .get(
+          `${process.env.VUE_APP_URL}/product?limit=${this.limit}&page=${this.page}&name=${this.sortBy}&sort=${this.sort}`
+        )
+        .then((response) => {
+          this.showPagination = true
+          this.product = response.data.data[0]
+          this.totalData = response.data.data[1].totalData
+        })
+        .catch((error) => {
+          console.log(error)
+        })
+    },
+
+    // search
+    searchProduct() {
+      if (this.keyword === '') {
+        this.getProduct()
+        this.$router.push('')
+        this.dataFound = 0
+        this.showPagination = true
+      } else {
+        axios
+          .get(`http://127.0.0.1:3001/product/search?keyword=${this.keyword}`)
+          .then((response) => {
+            this.showPagination = false
+            this.product = response.data.data[0]
+            this.dataFound = response.data.msg
+            this.$router.push(`?keyword=${this.keyword}`)
+          })
+          .catch((error) => {
+            if (error) {
+              this.dataFound = 'Sorry Data Not Found'
+              this.getProduct()
+              this.$router.push(`?keyword=${this.keyword}`)
+              this.showPagination = false
+            }
+          })
+      }
+    },
+
+    // sort
+    // sort by name
+    sortNameASC() {
+      this.sortBy = 'product_name'
+      this.sort = 'ASC'
+      this.$router.push(`?orderBy=${this.sortBy}`)
+      this.page = 1
+      this.getProduct()
+    },
+    sortNameDESC() {
+      this.sortBy = 'product_name'
+      this.sort = 'DESC'
+      this.$router.push(`?orderBy=${this.sortBy}`)
+      this.page = 1
+      this.getProduct()
+    },
+    // price
+    sortPriceASC() {
+      this.sortBy = 'product_price'
+      this.sort = 'ASC'
+      this.page = 1
+      this.getProduct()
+    },
+    sortPriceDESC() {
+      this.sortBy = 'product_price'
+      this.sort = 'DESC'
+      this.$router.push(`?orderBy=${this.sortBy}`)
+      this.page = 1
+      this.getProduct()
+    },
+    // date
+    sortDateASC() {
+      this.sortBy = 'product_created_at'
+      this.sort = 'ASC'
+      this.$router.push(`?orderBy=${this.sortBy}`)
+      this.page = 1
+      this.getProduct()
+    },
+    sortDateDESC() {
+      this.sortBy = 'product_created_at'
+      this.sort = 'DESC'
+      this.$router.push(`?orderBy=${this.sortBy}`)
+      this.page = 1
+      this.getProduct()
+    },
+
+    // pagination
+    pageChange(value) {
+      this.page = value
+      this.$router.push(`?page=${value}`)
+      this.getProduct()
     },
     checkList(data) {
-      //   console.log(data)
       return this.cart.some((value) => value.product_id === data.product_id)
     }
   }

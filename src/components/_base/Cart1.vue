@@ -1,21 +1,21 @@
 <template>
   <div>
-    <div class="item-order" v-for="(value, index) in cart" :key="index">
+    <div class="item-order" v-for="(value, index) in itemOrder" :key="index">
       <img src="@/assets/img/product/bear.png" alt="...." width="100px" height="100px" />
       <div class="selected-items">
         <p>{{value.product_name}}</p>
 
         <div class="quantity">
           <b-button-group size="sm">
-            <b-button v-if="value.qty == 1" variant="outline-warning">
+            <b-button v-if="value.qty == 1" variant="outline-warning" @click="deleteOrder(value)">
               <b-icon variant="dark" icon="trash"></b-icon>
             </b-button>
-            <b-button v-else variant="outline-warning" @click="decrementCart(value)">
+            <b-button v-else variant="outline-warning" @click="decrement(value)">
               <b-icon variant="dark" icon="dash"></b-icon>
             </b-button>
 
             <input class="input-qty" type="text" v-model="value.qty" min="1" max="100" />
-            <b-button variant="outline-warning" @click="incrementCart(value)">
+            <b-button variant="outline-warning" @click="increment(value)">
               <b-icon variant="dark" icon="plus"></b-icon>
             </b-button>
           </b-button-group>
@@ -28,7 +28,7 @@
     </div>
     <hr />
     <!-- checkout -->
-    <!-- <div class="checkout align-text-bottom">
+    <div class="checkout align-text-bottom">
       <div class="total">
         <p>Total:</p>
         <p>
@@ -44,10 +44,10 @@
         v-b-modal.modal-checkout
       >Checkout</button>
       <button type="button" @click="cancelOrder()" class="btn btn-cancels">Cancel</button>
-    </div>-->
+    </div>
 
     <!-- modal product-->
-    <!-- <b-modal id="modal-checkout" ref="modal-checkout" centered :title="message" hide-footer>
+    <b-modal id="modal-checkout" ref="modal-checkout" centered :title="message" hide-footer>
       <div class="modal-header">
         <h5 class="modal-title">Checkout</h5>
         <h5 class="modal-title">Receipt no: {{invoice}}</h5>
@@ -86,21 +86,73 @@
         <hr />
         <button class="btn btn-email" @click="cancelOrder()">Send Email</button>
       </div>
-    </b-modal>-->
+    </b-modal>
   </div>
 </template>
 
 <script>
-import { mapGetters, mapMutations } from 'vuex'
+import axios from 'axios'
 export default {
   name: 'cart',
-  computed: {
-    ...mapGetters({
-      cart: 'getCart'
-    })
+  props: ['itemOrder'],
+  data() {
+    return {
+      message: '',
+      invoice: '',
+      subTotal: 0,
+      orders: [],
+      dataCheckOut: []
+    }
   },
   methods: {
-    ...mapMutations(['incrementCart', 'decrementCart'])
+    increment(data) {
+      const cekData = this.itemOrder.findIndex(
+        (value) => value.product_id === data.product_id
+      )
+      this.itemOrder[cekData].qty += 1
+    },
+    decrement(data) {
+      const cekData = this.itemOrder.findIndex(
+        (value) => value.product_id === data.product_id
+      )
+      this.itemOrder[cekData].qty -= 1
+    },
+    deleteOrder(data) {
+      const getIndex = this.itemOrder.findIndex(
+        (value) => value.product_id === data.product_id
+      )
+      this.itemOrder.splice(getIndex, 1)
+    },
+    totalPrice() {
+      let priceTotal = 0
+      for (let i = 0; i < this.itemOrder.length; i++) {
+        priceTotal += this.itemOrder[i].product_price * this.itemOrder[i].qty
+      }
+      return priceTotal
+    },
+    checkout() {
+      this.itemOrder.map((value) => {
+        const orderData = {
+          product_id: value.product_id,
+          qty: value.qty
+        }
+        this.dataCheckOut = [...this.dataCheckOut, orderData]
+      })
+
+      const data = {
+        orders: this.dataCheckOut
+      }
+
+      axios.post('http://127.0.0.1:3001/order', data).then((result) => {
+        this.orders = result.data.data.orders
+        this.message = result.data.msg
+        this.invoice = result.data.data.invoice
+        this.subTotal = result.data.data.subtotal
+      })
+    },
+    cancelOrder() {
+      this.$emit('clearOrder')
+    }
   }
 }
 </script>

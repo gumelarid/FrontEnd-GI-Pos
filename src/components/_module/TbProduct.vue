@@ -9,6 +9,7 @@
       <table class="table text-center">
         <thead style="border-bottom: 1px solid black;">
           <tr>
+            <th scope="cols">Image</th>
             <th scope="cols">Product Name</th>
             <th scope="cols">Category Name</th>
             <th scope="cols">Price</th>
@@ -17,6 +18,14 @@
         </thead>
         <tbody>
           <tr v-for="(value, index) in products" :key="index">
+            <td class="text-muted">
+              <img
+                class="card-img-top"
+                :src="`value.product_image`"
+                alt="...."
+                style="max-height:180px;"
+              />
+            </td>
             <td class="text-muted">{{ value.product_name }}</td>
             <td class="text-muted">{{ value.category_name }}</td>
             <td class="text-muted">
@@ -47,7 +56,7 @@
 
     <!-- pagination -->
     <b-pagination
-      v-model="page"
+      v-model="currentPage"
       :per-page="limit"
       :total-rows="totalData"
       @change="pageChange"
@@ -76,6 +85,7 @@
           <div class="col-sm-10">
             <input type="File" @change="handleFile" class="form-control" required />
           </div>
+          <b-alert :show="alert">{{ isMsg }}</b-alert>
         </div>
         <div class="form-group row">
           <label class="col-sm-2 col-form-label">Price</label>
@@ -126,7 +136,7 @@ export default {
       isMsg: '',
       form: {
         product_name: '',
-        category_id: '',
+        id_category: '',
         product_price: '',
         product_image: '',
         status: 1
@@ -143,9 +153,26 @@ export default {
     })
   },
   methods: {
-    ...mapActions(['getCategorys', 'getProducts', 'addProducts']),
+    ...mapActions([
+      'getCategorys',
+      'getProducts',
+      'addProducts',
+      'updateProducts',
+      'deleteProducts'
+    ]),
 
     ...mapMutations(['changePage']),
+    makeToast(msg, append = false) {
+      this.$bvToast.toast(`${msg}`, {
+        title: 'Success',
+        variant: 'success',
+        autoHideDelay: 10000,
+        appendToast: append
+      })
+    },
+    closeModal() {
+      this.$refs['modal-product'].hide()
+    },
     pageChange(value) {
       if (parseInt(this.$route.query.page) !== value) {
         this.$router.push(`?page=${value}`)
@@ -159,23 +186,70 @@ export default {
     addProduct() {
       const data = new FormData()
       data.append('product_name', this.form.product_name)
-      data.append('category_id', this.form.category_id)
+      data.append('id_category', this.form.id_category)
       data.append('product_price', this.form.product_price)
       data.append('status', this.form.status)
       data.append('product_image', this.form.product_image)
-      console.log(this.form)
-      // this.addProducts(data)
-      //   .then((response) => {
-      //     console.log(response)
-      //     // this.alert = true
-      //     // this.isMsg = response.msg
-      //     // this.getProducts()
-      //   })
-      //   .catch((error) => {
-      //     console.log(error)
-      //     // this.alert = true
-      //     // this.isMsg = error.data.msg
-      //   })
+
+      this.addProducts(data)
+        .then((response) => {
+          // this.alert = true
+          this.isMsg = response.msg
+          this.makeToast(this.isMsg)
+          this.closeModal()
+          this.getProducts()
+          this.form = {
+            id_category: '',
+            product_name: '',
+            product_image: '',
+            product_price: '',
+            status: 1
+          }
+        })
+        .catch((error) => {
+          this.alert = true
+          this.isMsg = error
+        })
+    },
+    setProduct(data) {
+      this.form = {
+        product_name: data.product_name,
+        id_category: data.id_category,
+        product_price: data.product_price,
+        status: data.status,
+        product_image: data.product_image
+      }
+      this.isUpdate = true
+      this.product_id = data.product_id
+    },
+    patchProduct() {
+      const data = new FormData()
+      data.append('product_name', this.form.product_name)
+      data.append('id_category', this.form.id_category)
+      data.append('product_price', this.form.product_price)
+      data.append('status', this.form.status)
+      data.append('product_image', this.form.product_image)
+      const setData = {
+        product_id: this.product_id,
+        form: data
+      }
+      this.updateProducts(setData)
+      this.isUpdate = false
+      this.getProducts()
+    },
+    deleteProduct(data) {
+      this.deleteProducts(data.product_id)
+        .then((response) => {
+          this.isMsg = response.msg
+          this.makeToast(this.isMsg)
+          this.closeModal()
+          this.isUpdate = false
+          this.getProducts()
+        })
+        .catch((error) => {
+          this.alert = true
+          this.isMsg = error.data.msg
+        })
     }
   },
   created() {
