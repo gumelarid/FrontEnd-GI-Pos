@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import History from '../views/History.vue'
 import Manage from '../views/Manage.vue'
+import User from '../views/User.vue'
 import Login from '../views/auth/Login.vue'
 import Register from '../views/auth/Register.vue'
 import store from '../store'
@@ -39,6 +40,12 @@ const routes = [
     name: 'Register',
     component: Register,
     meta: { requiresVisitor: true }
+  },
+  {
+    path: '/User',
+    name: 'User',
+    component: User,
+    meta: { requiresAuth: true }
   }
 ]
 

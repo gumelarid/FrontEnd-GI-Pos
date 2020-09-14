@@ -22,7 +22,7 @@
     <b-container fluid style="padding-left:0; padding-right:0;">
       <b-row class="main">
         <b-col md="8" class="items">
-          <!-- <b-form class="m-3" v-on:submit.prevent="searchProduct" inline>
+          <b-form class="m-3" v-on:submit.prevent="search" inline>
             <b-input placeholder="Search Product ....." v-model="keyword"></b-input>
             <b-button variant="info" type="submit" class="ml-md-2">Search</b-button>
 
@@ -44,7 +44,7 @@
             </b-dropdown>
           </b-form>
 
-          <div v-if="(!dataFound == 0)" class="text-center text-item">{{ dataFound }}</div>-->
+          <!-- <div v-if="(!dataFound === '')" class="text-center text-item">{{ dataFound }}</div> -->
 
           <!-- product -->
           <b-row class="product-items">
@@ -59,7 +59,7 @@
             >
               <img
                 class="card-img-top"
-                src="@/assets/img/product/bear.png"
+                :src="url + '/' + value.product_image"
                 alt="...."
                 style="max-height:180px;"
               />
@@ -67,8 +67,12 @@
                 <div class="text-item">
                   <strong>{{ value.product_name }}</strong>
                   <div>
-                    RP {{ value.product_price.toString()
-                    .replace(/\B(?=(\d{3})+(?!\d))/g, '.') }}
+                    RP
+                    {{
+                    value.product_price
+                    .toString()
+                    .replace(/\B(?=(\d{3})+(?!\d))/g, '.')
+                    }}
                   </div>
                 </div>
                 <div class="button-add">
@@ -139,7 +143,9 @@ export default {
   data() {
     return {
       showPagination: true,
-      currentPage: 1
+      currentPage: 1,
+      keyword: '',
+      url: process.env.VUE_APP_URL
     }
   },
   computed: {
@@ -155,8 +161,27 @@ export default {
     this.getProducts()
   },
   methods: {
-    ...mapActions(['getProducts']),
-    ...mapMutations(['changePage', 'addToCart', 'removeFromCart']),
+    ...mapActions(['getProducts', 'searchProduct']),
+    ...mapMutations([
+      'setSearchResult',
+      'setKeyword',
+      'sortProduct',
+      'changePage',
+      'addToCart',
+      'removeFromCart'
+    ]),
+    // search
+    search() {
+      if (this.keyword === '') {
+        this.getProducts()
+        this.$router.push('')
+        this.showPagination = true
+      } else {
+        this.searchProduct(this.keyword)
+        this.$router.push(`?keyword=${this.keyword}`)
+        this.showPagination = false
+      }
+    },
     pageChange(value) {
       if (parseInt(this.$route.query.page) !== value) {
         this.$router.push(`?page=${value}`)
@@ -167,11 +192,75 @@ export default {
     checkList(data) {
       //   console.log(data)
       return this.cart.some((value) => value.product_id === data.product_id)
+    },
+    sortNameASC() {
+      const data = {
+        sortBy: 'product_name',
+        sort: 'ASC',
+        page: 1
+      }
+      this.sortProduct(data)
+      this.getProducts()
+      this.$router.push(`?orderBy=${data.sortBy}`)
+    },
+    sortNameDESC() {
+      const data = {
+        sortBy: 'product_name',
+        sort: 'DESC',
+        page: 1
+      }
+      this.sortProduct(data)
+      this.getProducts()
+      this.$router.push(`?orderBy=${data.sortBy}`)
+    },
+    // price
+    sortPriceASC() {
+      const data = {
+        sortBy: 'product_price',
+        sort: 'ASC',
+        page: 1
+      }
+      this.sortProduct(data)
+      this.getProducts()
+      this.$router.push(`?orderBy=${data.sortBy}`)
+    },
+    sortPriceDESC() {
+      const data = {
+        sortBy: 'product_price',
+        sort: 'DESC',
+        page: 1
+      }
+      this.sortProduct(data)
+      this.$router.push(`?orderBy=${data.sortBy}`)
+      this.getProducts()
+    },
+    // date
+    sortDateASC() {
+      const data = {
+        sortBy: 'product_created_at',
+        sort: 'ASC',
+        page: 1
+      }
+      this.sortProduct(data)
+
+      this.$router.push(`?orderBy=${data.sortBy}`)
+
+      this.getProducts()
+    },
+    sortDateDESC() {
+      const data = {
+        sortBy: 'product_created_at',
+        sort: 'desc',
+        page: 1
+      }
+      this.sortProduct(data)
+      this.$router.push(`?orderBy=${data.sortBy}`)
+      this.getProducts()
     }
   }
 }
 </script>
-<style scoped >
+<style scoped>
 .header-title {
   font-size: 1.5rem;
   padding-left: 0;

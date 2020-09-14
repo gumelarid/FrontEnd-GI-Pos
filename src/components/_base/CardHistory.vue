@@ -1,41 +1,73 @@
 <template>
-  <div>
-    <b-container fluid>
-      <b-row>
-        <b-col md="12" class="header-title">
-          <div class="list" v-b-toggle.sidebar>
-            <b-icon icon="list" style="width: 26px; height: 26px;"></b-icon>
-          </div>
-          <div class="title">
-            <p>History</p>
-          </div>
-        </b-col>
-      </b-row>
-    </b-container>
-    <Sidebar />
-    <b-container fluid style="padding-left:0; padding-right:0;">
-      <b-row class="main">
-        <CardHistory />
-
-        <Chart />
-        <TbHistory />
-      </b-row>
-    </b-container>
-  </div>
+  <b-col md="12">
+    <div class="card-history">
+      <b-col md="3" sm="12" cols="12" class="income">
+        <div class="card-body">
+          <p>Today's Income</p>
+          <p>
+            <strong>
+              Rp.
+              {{
+              incomeDay.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')
+              }}
+            </strong>
+          </p>
+          <!-- <p>
+            <small class="text-muted">+2% Yesterday</small>
+          </p>-->
+        </div>
+      </b-col>
+      <b-col md="3" sm="12" cols="12" class="order">
+        <div class="card-body">
+          <p>Order</p>
+          <p>
+            <strong>{{ totalOrder }}</strong>
+          </p>
+          <!-- <p>
+            <small class="text-muted">+5% Last Week</small>
+          </p>-->
+        </div>
+      </b-col>
+      <b-col md="3" sm="12" cols="12" class="total-income">
+        <div class="card-body">
+          <p>This Year's Income</p>
+          <p>
+            <strong>
+              Rp.
+              {{
+              incomeYear
+              .toString()
+              .replace(/\B(?=(\d{3})+(?!\d))/g, '.')
+              }}
+            </strong>
+          </p>
+          <!-- <p>
+            <small class="text-muted">+10% Last Year</small>
+          </p>-->
+        </div>
+      </b-col>
+    </div>
+  </b-col>
 </template>
 
 <script>
-import Sidebar from '../components/_module/Sidebar'
-import CardHistory from '../components/_base/CardHistory'
-import Chart from '../components/_base/Chart'
-import TbHistory from '../components/_base/TbHistory'
+import { mapActions, mapGetters } from 'vuex'
 export default {
-  name: 'History',
-  components: {
-    Sidebar,
-    CardHistory,
-    Chart,
-    TbHistory
+  name: 'CardHistory',
+  computed: {
+    ...mapGetters({
+      incomeDay: 'getIncomeDay',
+      totalOrder: 'getTotalOrder',
+      incomeYear: 'getIncomeYear'
+    })
+  },
+  methods: {
+    ...mapActions(['getIncomeDays', 'getOrderWeek', 'getIncomeYears'])
+  },
+  created() {
+    this.getIncomeDays()
+    this.getOrderWeek()
+    this.getIncomeYears()
   }
 }
 </script>

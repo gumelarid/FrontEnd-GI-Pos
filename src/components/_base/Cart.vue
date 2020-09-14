@@ -1,48 +1,29 @@
 <template>
   <div>
     <div class="item-order" v-for="(value, index) in cart" :key="index">
-      <img
-        src="@/assets/img/product/bear.png"
-        alt="...."
-        width="100px"
-        height="100px"
-      />
+      <img :src="url + '/' + value.product_image" alt="...." width="100px" height="100px" />
       <div class="selected-items">
         <p>{{ value.product_name }}</p>
 
         <div class="quantity">
           <b-button-group size="sm">
             <b-button v-if="value.qty == 1" variant="outline-warning">
-              <b-icon
-                variant="dark"
-                icon="trash"
-                @click="removeFromCart(value)"
-              ></b-icon>
+              <b-icon variant="dark" icon="trash" @click="removeFromCart(value)"></b-icon>
             </b-button>
-            <b-button
-              v-else
-              variant="outline-warning"
-              @click="decrementCart(value)"
-            >
+            <b-button v-else variant="outline-warning" @click="decrementCart(value)">
               <b-icon variant="dark" icon="dash"></b-icon>
             </b-button>
 
-            <input
-              class="input-qty"
-              type="text"
-              v-model="value.qty"
-              min="1"
-              max="100"
-            />
+            <input class="input-qty" type="text" v-model="value.qty" min="1" max="100" />
             <b-button variant="outline-warning" @click="incrementCart(value)">
               <b-icon variant="dark" icon="plus"></b-icon>
             </b-button>
           </b-button-group>
           <span class="price">
             Rp.{{
-              (value.product_price * value.qty)
-                .toString()
-                .replace(/\B(?=(\d{3})+(?!\d))/g, '.')
+            (value.product_price * value.qty)
+            .toString()
+            .replace(/\B(?=(\d{3})+(?!\d))/g, '.')
             }}
           </span>
         </div>
@@ -53,9 +34,7 @@
     <div class="checkout align-text-bottom">
       <div class="total">
         <p>Total:</p>
-        <p>
-          Rp. {{ totalPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.') }}
-        </p>
+        <p>Rp. {{ totalPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.') }}</p>
       </div>
       <p class="text-left text-muted">*Belum Termasuk PPN</p>
       <button
@@ -63,12 +42,8 @@
         class="btn btn-checkout"
         @click="checkOut(cart)"
         v-b-modal.modal-checkout
-      >
-        Checkout
-      </button>
-      <button type="button" @click="cancelOrder()" class="btn btn-cancels">
-        Cancel
-      </button>
+      >Checkout</button>
+      <button type="button" @click="cancelOrder()" class="btn btn-cancels">Cancel</button>
     </div>
 
     <!-- modal product -->
@@ -87,20 +62,16 @@
         <small>Chasier : {{ user.user_name }}</small>
       </div>
       <div class="modal-body">
-        <div
-          class="menu-item-order"
-          v-for="(value, index) in cart"
-          :key="index"
-        >
+        <div class="menu-item-order" v-for="(value, index) in cart" :key="index">
           <div>
             <strong>{{ value.product_name }} x{{ value.qty }}</strong>
           </div>
           <div>
             RP
             {{
-              (value.product_price * value.qty)
-                .toString()
-                .replace(/\B(?=(\d{3})+(?!\d))/g, '.')
+            (value.product_price * value.qty)
+            .toString()
+            .replace(/\B(?=(\d{3})+(?!\d))/g, '.')
             }}
           </div>
         </div>
@@ -112,18 +83,18 @@
           <div>
             RP
             {{
-              (totalPrice * 0.1)
-                .toString()
-                .replace(/\B(?=(\d{3})+(?!\d))/g, '.')
+            (totalPrice * 0.1)
+            .toString()
+            .replace(/\B(?=(\d{3})+(?!\d))/g, '.')
             }}
           </div>
         </div>
         <p class="text-right">
           Total : Rp.
           {{
-            (totalPrice + totalPrice * 0.1)
-              .toString()
-              .replace(/\B(?=(\d{3})+(?!\d))/g, '.')
+          (totalPrice + totalPrice * 0.1)
+          .toString()
+          .replace(/\B(?=(\d{3})+(?!\d))/g, '.')
           }}
         </p>
         <p>Payment : Cash</p>
@@ -143,7 +114,8 @@ export default {
   name: 'cart',
   data() {
     return {
-      dataCheckOut: []
+      dataCheckOut: [],
+      url: process.env.VUE_APP_URL
     }
   },
   computed: {
@@ -163,7 +135,7 @@ export default {
     ]),
     ...mapActions(['orderPost']),
     checkOut(data) {
-      data.map(value => {
+      data.map((value) => {
         const orderData = {
           product_id: value.product_id,
           qty: value.qty

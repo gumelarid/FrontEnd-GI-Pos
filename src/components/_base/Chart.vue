@@ -1,41 +1,28 @@
 <template>
-  <div>
-    <b-container fluid>
-      <b-row>
-        <b-col md="12" class="header-title">
-          <div class="list" v-b-toggle.sidebar>
-            <b-icon icon="list" style="width: 26px; height: 26px;"></b-icon>
-          </div>
-          <div class="title">
-            <p>History</p>
-          </div>
-        </b-col>
-      </b-row>
-    </b-container>
-    <Sidebar />
-    <b-container fluid style="padding-left:0; padding-right:0;">
-      <b-row class="main">
-        <CardHistory />
-
-        <Chart />
-        <TbHistory />
-      </b-row>
-    </b-container>
-  </div>
+  <b-col md="12" sm="12" cols="12">
+    <div class="recent-order" style="margin: 10px 50px;">
+      <h3 class="text-left pl-4 pt-3" style=" font-size: 1rem;">Revenue</h3>
+      <div class="card-body" style="padding: 10px 40px;">
+        <line-chart :data="chartOrder"></line-chart>
+      </div>
+    </div>
+  </b-col>
 </template>
 
 <script>
-import Sidebar from '../components/_module/Sidebar'
-import CardHistory from '../components/_base/CardHistory'
-import Chart from '../components/_base/Chart'
-import TbHistory from '../components/_base/TbHistory'
+import { mapActions, mapGetters } from 'vuex'
 export default {
-  name: 'History',
-  components: {
-    Sidebar,
-    CardHistory,
-    Chart,
-    TbHistory
+  name: 'Chart',
+  computed: {
+    ...mapGetters({
+      chartOrder: 'getChartOrderWeek'
+    })
+  },
+  methods: {
+    ...mapActions(['getChartOrderWeeks'])
+  },
+  created() {
+    this.getChartOrderWeeks()
   }
 }
 </script>
@@ -128,7 +115,7 @@ export default {
 
 /* chart */
 .chart {
-  margin: 10px 5px;
+  margin: 10px 70px;
   background: #ffffff;
   box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.25);
   border-radius: 10px;
@@ -136,7 +123,7 @@ export default {
 
 /* recent order */
 .recent-order {
-  margin: 10px 5px;
+  margin: 10px 70px;
   background: #ffffff;
   box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.25);
   border-radius: 10px;

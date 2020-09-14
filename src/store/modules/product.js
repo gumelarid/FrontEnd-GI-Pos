@@ -1,16 +1,26 @@
 import axios from 'axios'
 export default {
   state: {
+    message: '',
+    keyword: '',
     count: 0,
     cart: [],
-    sort: '',
     totalData: null,
     limit: 6,
     page: 1,
     product: [],
-    invoice: ''
+    invoice: '',
+    sortBy: 'product_name',
+    sort: 'ASC'
   },
   mutations: {
+    setMsg(state, payload) {
+      console.log(payload)
+      state.message = payload
+    },
+    setSearchResult(state, payload) {
+      state.product = payload
+    },
     setProduct(state, payload) {
       state.product = payload.data
       state.totalData = payload.pagination.totalData
@@ -54,16 +64,20 @@ export default {
     },
     cancelOrder(state) {
       state.cart = []
+    },
+    sortProduct(state, payload) {
+      state.page = payload.page
+      state.sort = payload.sort
+      state.sortBy = payload.sortBy
     }
   },
   actions: {
     getProducts(context) {
       axios
         .get(
-          `${process.env.VUE_APP_URL}/product?limit=${context.state.limit}&page=${context.state.page}`
+          `${process.env.VUE_APP_URL}/product?limit=${context.state.limit}&page=${context.state.page}&name=${context.state.sortBy}&sort=${context.state.sort}`
         )
         .then(response => {
-          // //   console.log(response)
           context.commit('setProduct', response.data)
           // context.commit('setTotalData', response.data.pagination.totalData)
         })
@@ -76,17 +90,19 @@ export default {
         axios
           .post(`${process.env.VUE_APP_URL}/product`, payload)
           .then(response => {
+            console.log(response.data)
             resolve(response.data)
           })
           .catch(error => {
-            console.log(error.response)
+            reject(error.response)
           })
       })
     },
     updateProducts(context, payload) {
+      console.log(payload.form)
       return new Promise((resolve, reject) => {
         axios
-          .patch(
+          .put(
             `${process.env.VUE_APP_URL}/product/${payload.product_id}`,
             payload.form
           )
@@ -94,7 +110,7 @@ export default {
             resolve(response.data)
           })
           .catch(error => {
-            reject(error.response)
+            console.log(error)
           })
       })
     },
@@ -121,9 +137,23 @@ export default {
             reject(error.response)
           })
       })
+    },
+    searchProduct(context, payload) {
+      axios
+        .get(`${process.env.VUE_APP_URL}/product/search?keyword=${payload}`)
+        .then(response => {
+          console.log(response)
+          context.commit('setSearchResult', response.data.data[0])
+        })
+        .catch(error => {
+          console.log(error.response)
+        })
     }
   },
   getters: {
+    getMessage(state) {
+      return state.message
+    },
     getProduct(state) {
       return state.product
     },

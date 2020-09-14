@@ -1,41 +1,79 @@
 <template>
-  <div>
-    <b-container fluid>
-      <b-row>
-        <b-col md="12" class="header-title">
-          <div class="list" v-b-toggle.sidebar>
-            <b-icon icon="list" style="width: 26px; height: 26px;"></b-icon>
-          </div>
-          <div class="title">
-            <p>History</p>
-          </div>
-        </b-col>
-      </b-row>
-    </b-container>
-    <Sidebar />
-    <b-container fluid style="padding-left:0; padding-right:0;">
-      <b-row class="main">
-        <CardHistory />
-
-        <Chart />
-        <TbHistory />
-      </b-row>
-    </b-container>
-  </div>
+  <b-col md="12" sm="12" cols="12" class="recent">
+    <div class="recent-order" style="margin: 10px 50px;">
+      <h3 class="text-left pl-4 pt-3" style=" font-size:1rem;">Recent Orders</h3>
+      <div class="card-body table-responsive">
+        <table class="table">
+          <thead style="border-bottom: 1px solid black;">
+            <tr>
+              <th scope="col">INVOICE</th>
+              <th scope="col">CHASIER</th>
+              <th scope="col">DATE</th>
+              <th scope="col">ORDER</th>
+              <th scope="col">AMOUNT</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(value, index) in history" :key="index">
+              <td class="text-muted">#{{ value.invoice }}</td>
+              <td class="text-muted">{{ value.user_name }}</td>
+              <td class="text-muted">{{ value.date }}</td>
+              <td class="text-muted">{{ value.order }}</td>
+              <td class="text-muted">
+                Rp. {{ value.total.toString()
+                .replace(/\B(?=(\d{3})+(?!\d))/g, '.') }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- pagination-->
+      <b-pagination
+        class="pb-2"
+        v-model="currentPage"
+        :per-page="limit"
+        :total-rows="totalData"
+        @change="pageChange"
+        v-show="showPagination"
+        align="center"
+        aria-controls="my-items"
+      ></b-pagination>
+    </div>
+  </b-col>
 </template>
 
 <script>
-import Sidebar from '../components/_module/Sidebar'
-import CardHistory from '../components/_base/CardHistory'
-import Chart from '../components/_base/Chart'
-import TbHistory from '../components/_base/TbHistory'
+import { mapActions, mapGetters, mapMutations } from 'vuex'
 export default {
-  name: 'History',
-  components: {
-    Sidebar,
-    CardHistory,
-    Chart,
-    TbHistory
+  name: 'TbHistory',
+  data() {
+    return {
+      showPagination: true,
+      currentPage: 1
+    }
+  },
+  computed: {
+    ...mapGetters({
+      history: 'getHistory',
+      limit: 'getLimitHistory',
+      page: 'getPageHistory',
+      totalData: 'getTotalDataHistory'
+    })
+  },
+  methods: {
+    ...mapActions(['getHistorys']),
+
+    ...mapMutations(['changePageHistory']),
+    pageChange(value) {
+      if (parseInt(this.$route.query.page) !== value) {
+        this.$router.push(`?page=${value}`)
+      }
+      this.changePageHistory(value)
+      this.getHistorys()
+    }
+  },
+  created() {
+    this.getHistorys()
   }
 }
 </script>

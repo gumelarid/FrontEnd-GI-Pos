@@ -3,14 +3,12 @@
     <div class="px-3 py-2">
       <h3>GI - POS</h3>
     </div>
-    <hr class="" />
+    <hr class />
     <div class="profile px-3 py-2">
       <div>
         <span>
           <strong>Wellcome</strong> |
-          <span class="badge badge-primary" v-if="user.user_role === 1"
-            >Admin</span
-          >
+          <span class="badge badge-primary" v-if="user.user_role === 1">Admin</span>
           <span class="badge badge-success" v-else>Chasier</span>
         </span>
         <h5>{{ user.user_name }}</h5>
@@ -24,6 +22,10 @@
       <router-link to="/history" class="nav-link">
         <b-icon icon="receipt" style="height:26px; width:26px;"></b-icon>
         <div class="text-link">History</div>
+      </router-link>
+      <router-link to="/user" class="nav-link" v-if="user.user_role === 1">
+        <b-icon icon="person-fill" style="height:26px; width:26px;"></b-icon>
+        <div class="text-link">User</div>
       </router-link>
       <router-link to="/manage" class="nav-link" v-if="user.user_role === 1">
         <b-icon icon="gear" style="height:26px; width:26px;"></b-icon>

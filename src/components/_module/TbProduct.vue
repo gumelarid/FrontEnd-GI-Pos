@@ -21,9 +21,9 @@
             <td class="text-muted">
               <img
                 class="card-img-top"
-                :src="`value.product_image`"
+                :src="url + '/' + value.product_image"
                 alt="...."
-                style="max-height:180px;"
+                style="max-width:150px;"
               />
             </td>
             <td class="text-muted">{{ value.product_name }}</td>
@@ -67,6 +67,7 @@
 
     <!-- modal product -->
     <b-modal id="modal-product" ref="modal-product" centered title="Product" hide-footer>
+      <p class="alert alert-danger" v-if="message">{{ message }}</p>
       <form @submit.prevent="addProduct">
         <div class="form-group row">
           <label class="col-sm-2 col-form-label">Name</label>
@@ -85,7 +86,6 @@
           <div class="col-sm-10">
             <input type="File" @change="handleFile" class="form-control" required />
           </div>
-          <b-alert :show="alert">{{ isMsg }}</b-alert>
         </div>
         <div class="form-group row">
           <label class="col-sm-2 col-form-label">Price</label>
@@ -134,6 +134,7 @@ export default {
       isUpdate: false,
       alert: false,
       isMsg: '',
+      url: process.env.VUE_APP_URL,
       form: {
         product_name: '',
         id_category: '',
@@ -149,7 +150,8 @@ export default {
       products: 'getProduct',
       limit: 'getLimit',
       page: 'getPage',
-      totalData: 'getTotalData'
+      totalData: 'getTotalData',
+      message: 'getMessage'
     })
   },
   methods: {
@@ -182,6 +184,7 @@ export default {
     },
     handleFile(e) {
       this.form.product_image = e.target.files[0]
+      console.log(this.form.product_image)
     },
     addProduct() {
       const data = new FormData()
@@ -207,8 +210,7 @@ export default {
           }
         })
         .catch((error) => {
-          this.alert = true
-          this.isMsg = error
+          alert(error.data.msg)
         })
     },
     setProduct(data) {
@@ -216,8 +218,7 @@ export default {
         product_name: data.product_name,
         id_category: data.id_category,
         product_price: data.product_price,
-        status: data.status,
-        product_image: data.product_image
+        status: data.status
       }
       this.isUpdate = true
       this.product_id = data.product_id
@@ -225,17 +226,24 @@ export default {
     patchProduct() {
       const data = new FormData()
       data.append('product_name', this.form.product_name)
-      data.append('id_category', this.form.id_category)
+      data.append('category_id', this.form.category_id)
       data.append('product_price', this.form.product_price)
       data.append('status', this.form.status)
       data.append('product_image', this.form.product_image)
-      const setData = {
+      const payload = {
         product_id: this.product_id,
         form: data
       }
-      this.updateProducts(setData)
-      this.isUpdate = false
-      this.getProducts()
+      this.updateProducts(payload)
+        .then((respsone) => {
+          this.getProductItem()
+          this.makeToast('Product Update')
+          this.closeModal()
+          this.isUpdate = false
+        })
+        .catch((error) => {
+          alert(error.data.msg)
+        })
     },
     deleteProduct(data) {
       this.deleteProducts(data.product_id)
