@@ -11,18 +11,18 @@
 
 1. <a href="https://nodejs.org/en/download/">Node Js</a>
 2. Node_modules `npm install` or `yarn install`
-3. Backend API #nama_projek [`here`](https://github.com/arkbootcamp/week4-web3-express)
+3. Backend API GI POS [`here`](https://github.com/galuhprahadi96/BackEnd-API-GI-Post)
 
 ## How to Install
 
-1. Download this Project or you can type `git clone #link_git`
+1. Download this Project or you can type `git clone https://github.com/galuhprahadi96/BackEnd-API-GI-Post.git`
 2. Open app's directory in CMD or Terminal
 3. Type `npm install` or `yarn install`
 4. Type `npm start`
 
 ## Visit the Web
 
-You can visit the web [`here`](https://www.google.com/)
+You can visit the web [`here`](https://gi-pos.netlify.app)
 
 ## Compiles and hot-reloads for development
 
