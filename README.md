@@ -1,6 +1,6 @@
 <h1 align='center'>Vue JS - GI POS</h1>
 
-#background_projek. [More about Vue](https://vuejs.org/)
+Gi Pos is a point of sales application for cafe and food outlets. [More about Vue](https://vuejs.org/)
 
 ## Built With
 
