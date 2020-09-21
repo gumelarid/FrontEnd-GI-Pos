@@ -23,7 +23,7 @@
                 class="card-img-top"
                 :src="url + '/' + value.product_image"
                 alt="...."
-                style="max-width:150px;"
+                style="max-width:100px;"
               />
             </td>
             <td class="text-muted">{{ value.product_name }}</td>
@@ -184,7 +184,6 @@ export default {
     },
     handleFile(e) {
       this.form.product_image = e.target.files[0]
-      console.log(this.form.product_image)
     },
     addProduct() {
       const data = new FormData()
@@ -224,26 +223,52 @@ export default {
       this.product_id = data.product_id
     },
     patchProduct() {
-      const data = new FormData()
-      data.append('product_name', this.form.product_name)
-      data.append('category_id', this.form.category_id)
-      data.append('product_price', this.form.product_price)
-      data.append('status', this.form.status)
-      data.append('product_image', this.form.product_image)
-      const payload = {
-        product_id: this.product_id,
-        form: data
+      if (this.form.product_image) {
+        const data = new FormData()
+        data.append('product_name', this.form.product_name)
+        data.append('id_category', this.form.id_category)
+        data.append('product_price', this.form.product_price)
+        data.append('status', this.form.status)
+        data.append('product_image', this.form.product_image)
+        const payload = {
+          product_id: this.product_id,
+          form: data
+        }
+        this.updateProducts(payload)
+          .then((respsone) => {
+            this.getProductItem()
+            this.makeToast('Product Update')
+            this.closeModal()
+            this.isUpdate = false
+          })
+          .catch((error) => {
+            if (error) {
+              alert('upload your new image')
+            }
+          })
+      } else {
+        const data = new FormData()
+        data.append('product_name', this.form.product_name)
+        data.append('category_id', this.form.category_id)
+        data.append('product_price', this.form.product_price)
+        data.append('status', this.form.status)
+        const payload = {
+          product_id: this.product_id,
+          form: data
+        }
+        this.updateProducts(payload)
+          .then((respsone) => {
+            this.getProductItem()
+            this.makeToast('Product Update')
+            this.closeModal()
+            this.isUpdate = false
+          })
+          .catch((error) => {
+            if (error) {
+              alert('upload your new image')
+            }
+          })
       }
-      this.updateProducts(payload)
-        .then((respsone) => {
-          this.getProductItem()
-          this.makeToast('Product Update')
-          this.closeModal()
-          this.isUpdate = false
-        })
-        .catch((error) => {
-          alert(error.data.msg)
-        })
     },
     deleteProduct(data) {
       this.deleteProducts(data.product_id)

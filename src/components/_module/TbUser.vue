@@ -52,7 +52,6 @@
               v-model="form.user_name"
               class="form-control"
               placeholder="Name"
-              disabled
               required
             />
           </div>

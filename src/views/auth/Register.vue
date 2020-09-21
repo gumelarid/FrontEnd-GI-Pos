@@ -3,7 +3,7 @@
     <div class="content">
       <h3>Register Now</h3>
       <hr />
-      <b-alert :show="alert">{{ isMsg }}</b-alert>
+      <b-alert class="alert warning" :show="alert">{{ isMsg }}</b-alert>
       <form @submit.prevent="onRegister">
         <div class="form-group row">
           <div class="col-sm-12 form-input">
@@ -64,7 +64,7 @@ export default {
     ...mapActions(['register']),
     onRegister() {
       this.register(this.form)
-        .then(response => {
+        .then((response) => {
           console.log(response)
           this.alert = true
           this.isMsg = response.msg
@@ -75,7 +75,7 @@ export default {
           }
           this.$router.push('/login')
         })
-        .catch(error => {
+        .catch((error) => {
           this.alert = true
           this.isMsg = error.msg
         })

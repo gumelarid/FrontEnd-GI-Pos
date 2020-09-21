@@ -23,23 +23,40 @@
       <b-row class="main">
         <b-col md="8" class="items">
           <b-form class="m-3" v-on:submit.prevent="search" inline>
-            <b-input placeholder="Search Product ....." v-model="keyword"></b-input>
-            <b-button variant="info" type="submit" class="ml-md-2">Search</b-button>
+            <b-input
+              placeholder="Search Product ....."
+              v-model="keyword"
+            ></b-input>
+            <b-button variant="info" type="submit" class="ml-md-2"
+              >Search</b-button
+            >
 
             <b-dropdown id="sort" class="m-2" variant="info" text="Sort">
               <b-dropdown-group id="dropdown-group-1" header="Product Name">
-                <b-dropdown-item-button @click="sortNameASC()">A-Z</b-dropdown-item-button>
-                <b-dropdown-item-button @click="sortNameDESC()">Z-A</b-dropdown-item-button>
+                <b-dropdown-item-button @click="sortNameASC()"
+                  >A-Z</b-dropdown-item-button
+                >
+                <b-dropdown-item-button @click="sortNameDESC()"
+                  >Z-A</b-dropdown-item-button
+                >
               </b-dropdown-group>
               <b-dropdown-divider></b-dropdown-divider>
               <b-dropdown-group id="dropdown-group-2" header="Date">
-                <b-dropdown-item-button @click="sortDateASC()">Old Product</b-dropdown-item-button>
-                <b-dropdown-item-button @click="sortDateDESC()">New Product</b-dropdown-item-button>
+                <b-dropdown-item-button @click="sortDateASC()"
+                  >Old Product</b-dropdown-item-button
+                >
+                <b-dropdown-item-button @click="sortDateDESC()"
+                  >New Product</b-dropdown-item-button
+                >
               </b-dropdown-group>
               <b-dropdown-divider></b-dropdown-divider>
               <b-dropdown-group id="dropdown-group-3" header="Price">
-                <b-dropdown-item-button @click="sortPriceASC()">Lowest Price</b-dropdown-item-button>
-                <b-dropdown-item-button @click="sortPriceDESC()">Highest Price</b-dropdown-item-button>
+                <b-dropdown-item-button @click="sortPriceASC()"
+                  >Lowest Price</b-dropdown-item-button
+                >
+                <b-dropdown-item-button @click="sortPriceDESC()"
+                  >Highest Price</b-dropdown-item-button
+                >
               </b-dropdown-group>
             </b-dropdown>
           </b-form>
@@ -69,9 +86,9 @@
                   <div>
                     RP
                     {{
-                    value.product_price
-                    .toString()
-                    .replace(/\B(?=(\d{3})+(?!\d))/g, '.')
+                      value.product_price
+                        .toString()
+                        .replace(/\B(?=(\d{3})+(?!\d))/g, '.')
                     }}
                   </div>
                 </div>
@@ -87,7 +104,12 @@
                       <b-icon icon="cart4"></b-icon>
                     </span>
                   </b-button>
-                  <b-button v-else variant="success" type="button" @click="removeFromCart(value)">
+                  <b-button
+                    v-else
+                    variant="success"
+                    type="button"
+                    @click="removeFromCart(value)"
+                  >
                     <span>
                       Remove
                       <b-icon icon="cart3"></b-icon>
@@ -112,7 +134,11 @@
         </b-col>
         <b-col md="4" class="cart-item">
           <div v-if="cart.length <= 0">
-            <img class="cart-img" src="../assets/img/icon/cart.png" alt="...." />
+            <img
+              class="cart-img"
+              src="../assets/img/icon/cart.png"
+              alt="...."
+            />
             <div class="cart-body">
               <h2>
                 <strong>Your Cart is Empty</strong>
@@ -191,7 +217,7 @@ export default {
     },
     checkList(data) {
       //   console.log(data)
-      return this.cart.some((value) => value.product_id === data.product_id)
+      return this.cart.some(value => value.product_id === data.product_id)
     },
     sortNameASC() {
       const data = {
