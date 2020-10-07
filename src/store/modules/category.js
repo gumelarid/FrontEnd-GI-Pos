@@ -11,14 +11,28 @@ export default {
   },
   actions: {
     getCategorys(context) {
-      axios
-        .get(`${process.env.VUE_APP_URL}/category`)
-        .then(response => {
-          context.commit('setCategory', response.data)
-        })
-        .catch(error => {
-          console.log(error.response)
-        })
+      return new Promise((resolve, reject) => {
+        axios
+          .get(`${process.env.VUE_APP_URL}/category`)
+          .then(response => {
+            context.commit('setCategory', response.data)
+          })
+          .catch(error => {
+            reject(error.response)
+          })
+      })
+    },
+    getCategoryById(context, payload) {
+      return new Promise((resolve, reject) => {
+        axios
+          .get(`${process.env.VUE_APP_URL}/category/${payload}`)
+          .then(response => {
+            resolve(response.data)
+          })
+          .catch(error => {
+            reject(error.response)
+          })
+      })
     },
     addCategorys(context, payload) {
       return new Promise((resolve, reject) => {

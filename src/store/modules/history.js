@@ -12,7 +12,6 @@ export default {
   },
   mutations: {
     setIncomeDay(state, payload) {
-      //   console.log(payload)
       state.incomeDay = payload
     },
     setTotalOrder(state, payload) {
@@ -22,7 +21,6 @@ export default {
       state.incomeYear = payload
     },
     setChartWeek(state, payload) {
-      // console.log(payload)
       state.chartOrder = payload
     },
     setHistory(state, payload) {
@@ -35,69 +33,78 @@ export default {
   },
   actions: {
     getIncomeDays(Context) {
-      axios
-        .get(`${process.env.VUE_APP_URL}/history/income`)
-        .then(response => {
-          //   console.log(response)
-          Context.commit('setIncomeDay', response.data.data.incomeDay)
-        })
-        .catch(error => {
-          console.log(error)
-        })
+      return new Promise((resolve, reject) => {
+        axios
+          .get(`${process.env.VUE_APP_URL}/history/income`)
+          .then(response => {
+            //   console.log(response)
+            Context.commit('setIncomeDay', response.data.data.incomeDay)
+          })
+          .catch(error => {
+            reject(error.response)
+          })
+      })
     },
     getOrderWeek(context) {
-      axios
-        .get(`${process.env.VUE_APP_URL}/history/count`)
-        .then(response => {
-          //   console.log(response)
-          context.commit('setTotalOrder', response.data.data.totalOrders)
-          //   this.totalOrder = response.data.data.totalOrder
-        })
-        .catch(error => {
-          console.log(error)
-        })
+      return new Promise((resolve, reject) => {
+        axios
+          .get(`${process.env.VUE_APP_URL}/history/count`)
+          .then(response => {
+            //   console.log(response)
+            context.commit('setTotalOrder', response.data.data.totalOrders)
+            //   this.totalOrder = response.data.data.totalOrder
+          })
+          .catch(error => {
+            reject(error.response)
+          })
+      })
     },
     getIncomeYears(context) {
-      axios
-        .get(`${process.env.VUE_APP_URL}/history/total`)
-        .then(response => {
-          context.commit('setIncomeYear', response.data.data.incomeYear)
-          // this.incomeYear = response.data.data.incomeYear
-        })
-        .catch(error => {
-          console.log(error)
-        })
+      return new Promise((resolve, reject) => {
+        axios
+          .get(`${process.env.VUE_APP_URL}/history/total`)
+          .then(response => {
+            context.commit('setIncomeYear', response.data.data.incomeYear)
+            // this.incomeYear = response.data.data.incomeYear
+          })
+          .catch(error => {
+            reject(error.response)
+          })
+      })
     },
     getChartOrderWeeks(context) {
-      axios
-        .get(`${process.env.VUE_APP_URL}/history/chart`)
-        .then(response => {
-          // console.log(response)
-          const setData = response.data.data
-          var chart = []
-          for (let i = 0; i < setData.length; i++) {
-            chart.push([setData[i].date, setData[i].sum])
-          }
-          context.commit('setChartWeek', chart)
-        })
-        .catch(error => {
-          console.log(error)
-        })
+      return new Promise((resolve, reject) => {
+        axios
+          .get(`${process.env.VUE_APP_URL}/history/chart`)
+          .then(response => {
+            // console.log(response)
+            const setData = response.data.data
+            var chart = []
+            for (let i = 0; i < setData.length; i++) {
+              chart.push([setData[i].date, setData[i].sum])
+            }
+            context.commit('setChartWeek', chart)
+          })
+          .catch(error => {
+            reject(error.response)
+          })
+      })
     },
-    getHistorys(context) {
-      axios
-        .get(
-          `${process.env.VUE_APP_URL}/history?limit=${context.state.limit}&page=${context.state.page}`
-        )
-        .then(response => {
-          console.log(response.data)
-          // const history = response.data
-          // console.log(response)
-          context.commit('setHistory', response.data)
-        })
-        .catch(error => {
-          console.log(error)
-        })
+    getHistorys(context, payload) {
+      return new Promise((resolve, reject) => {
+        axios
+          .get(
+            `${process.env.VUE_APP_URL}/history?limit=${context.state.limit}&page=${context.state.page}`
+          )
+          .then(response => {
+            // const history = response.data
+            // console.log(response)
+            context.commit('setHistory', response.data)
+          })
+          .catch(error => {
+            reject(error.response)
+          })
+      })
     }
   },
   getters: {
@@ -105,18 +112,15 @@ export default {
       return state.incomeDay
     },
     getTotalOrder(state) {
-      // console.log(state.TotalOrder)
       return state.totalOrder
     },
     getIncomeYear(state) {
-      // console.log(state.TotalOrder)
       return state.incomeYear
     },
     getChartOrderWeek(state) {
       return state.chartOrder
     },
     getHistory(state) {
-      // return state.history
       let dataHistory = []
       state.history.map(value => {
         const setData = {
@@ -126,7 +130,6 @@ export default {
           order: value.orders.map(item => item.product_name).join(', '),
           total: value.subtotal
         }
-        // this.showPagination = false
         dataHistory = [...dataHistory, setData]
       })
       return dataHistory
@@ -138,7 +141,6 @@ export default {
       return state.limit
     },
     getPageHistory(state) {
-      console.log(state.page)
       return state.page
     }
   }

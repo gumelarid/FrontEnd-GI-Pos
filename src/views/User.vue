@@ -4,7 +4,7 @@
       <b-row>
         <b-col md="12" class="header-title">
           <div class="list" v-b-toggle.sidebar>
-            <b-icon icon="list" style="width: 26px; height: 26px;"></b-icon>
+            <b-icon icon="list" style="width: 26px; height: 26px"></b-icon>
           </div>
           <div class="title">
             <p>User Management</p>
@@ -13,7 +13,7 @@
       </b-row>
     </b-container>
     <Sidebar />
-    <b-container fluid style="padding-left:0; padding-right:0;">
+    <b-container fluid style="padding-left: 0; padding-right: 0">
       <b-row class="main">
         <b-col md="12">
           <div class="my-5" sm="12" cols="12">
@@ -32,10 +32,10 @@ import Sidebar from '../components/_module/Sidebar'
 
 import TbUser from '../components/_module/TbUser'
 export default {
+  title: 'Management User - GI POS',
   name: 'manage',
   components: {
     Sidebar,
-
     TbUser
   }
 }

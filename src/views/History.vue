@@ -4,7 +4,7 @@
       <b-row>
         <b-col md="12" class="header-title">
           <div class="list" v-b-toggle.sidebar>
-            <b-icon icon="list" style="width: 26px; height: 26px;"></b-icon>
+            <b-icon icon="list" style="width: 26px; height: 26px"></b-icon>
           </div>
           <div class="title">
             <p>History</p>
@@ -13,7 +13,7 @@
       </b-row>
     </b-container>
     <Sidebar />
-    <b-container fluid style="padding-left:0; padding-right:0;">
+    <b-container fluid style="padding-left: 0; padding-right: 0">
       <b-row class="main">
         <CardHistory />
 
@@ -30,6 +30,7 @@ import CardHistory from '../components/_base/CardHistory'
 import Chart from '../components/_base/Chart'
 import TbHistory from '../components/_base/TbHistory'
 export default {
+  title: 'History - GI POS',
   name: 'History',
   components: {
     Sidebar,

@@ -4,7 +4,7 @@
       <b-row>
         <b-col md="12" class="header-title">
           <div class="list" v-b-toggle.sidebar>
-            <b-icon icon="list" style="width: 26px; height: 26px;"></b-icon>
+            <b-icon icon="list" style="width: 26px; height: 26px"></b-icon>
           </div>
           <div class="title">
             <p>manage</p>
@@ -13,17 +13,17 @@
       </b-row>
     </b-container>
     <Sidebar />
-    <b-container fluid style="padding-left:0; padding-right:0;">
+    <b-container fluid style="padding-left: 0; padding-right: 0">
       <b-row class="main">
         <b-col md="12">
           <div class="my-5" sm="12" cols="12">
             <b-container>
               <b-card no-body>
                 <b-tabs pills card>
-                  <b-tab title="Product" active style="font-size: 1rem;">
+                  <b-tab title="Product" active style="font-size: 1rem">
                     <TbProduct />
                   </b-tab>
-                  <b-tab title="Category" style="font-size: 1rem;">
+                  <b-tab title="Category" style="font-size: 1rem">
                     <TbCategory />
                   </b-tab>
                 </b-tabs>
@@ -42,6 +42,7 @@ import TbProduct from '../components/_module/TbProduct'
 import TbCategory from '../components/_module/TbCategory'
 
 export default {
+  title: 'Data Management - GI POS',
   name: 'manage',
   components: {
     Sidebar,

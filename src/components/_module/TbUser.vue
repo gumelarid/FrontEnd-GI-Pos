@@ -4,7 +4,7 @@
 
     <div class="table-responsive">
       <table class="table text-center">
-        <thead style="border-bottom: 1px solid black;">
+        <thead style="border-bottom: 1px solid black">
           <tr>
             <th scope="col">Name</th>
             <th scope="col">Email</th>
@@ -19,7 +19,8 @@
               <span
                 v-if="value.user_role === 1"
                 class="badge badge-sm badge-primary"
-              >Admin</span>
+                >Admin</span
+              >
               <span v-else class="badge badge-sm badge-success">Chasier</span>
             </td>
             <td class="text-muted">{{ value.user_email }}</td>
@@ -31,10 +32,23 @@
               <span class="badge badge-warning">Not Active</span>
             </td>
             <td>
-              <b-dropdown size="sm" text="Action" variant="outline-primary" class="m-2">
-                <b-dropdown-item v-b-modal.modal-change @click="setPassword(value)">Change Password</b-dropdown-item>
-                <b-dropdown-item v-b-modal.modal-user @click="setUsers(value)">Edit</b-dropdown-item>
-                <b-dropdown-item @click="deleteUser(value)">Delete</b-dropdown-item>
+              <b-dropdown
+                size="sm"
+                text="Action"
+                variant="outline-primary"
+                class="m-2"
+              >
+                <b-dropdown-item
+                  v-b-modal.modal-change
+                  @click="setPassword(value)"
+                  >Change Password</b-dropdown-item
+                >
+                <b-dropdown-item v-b-modal.modal-user @click="setUsers(value)"
+                  >Edit</b-dropdown-item
+                >
+                <b-dropdown-item @click="deleteUser(value)"
+                  >Delete</b-dropdown-item
+                >
               </b-dropdown>
             </td>
           </tr>
@@ -92,8 +106,14 @@
       </form>
     </b-modal>
 
-    <b-modal id="modal-change" ref="modal-user" centered title="User" hide-footer>
-      <form @submit.prevent="changePassword">
+    <b-modal
+      id="modal-change"
+      ref="modal-user"
+      centered
+      title="User"
+      hide-footer
+    >
+      <form @submit.prevent="changePassword()">
         <div class="form-group row">
           <label class="col-sm-2 col-form-label">New Password</label>
           <div class="col-sm-10">
@@ -121,7 +141,7 @@ export default {
   data() {
     return {
       users_id: '',
-      alert: false,
+      alert: true,
       isMsg: '',
       isUpdate: false,
 
@@ -139,7 +159,7 @@ export default {
   },
   computed: {
     ...mapGetters({
-      users: 'getTbUser'
+      users: 'getUserData'
     })
   },
   methods: {
@@ -154,10 +174,9 @@ export default {
     closeModal() {
       this.$refs['modal-user'].hide()
     },
-    ...mapActions(['getUsers', 'patchUsers', 'changePasswords', 'deleteUsers']),
+    ...mapActions(['getUsers', 'patchUsers', 'patchPasswords', 'deleteUsers']),
 
     setUsers(data) {
-      // console.log(data)
       this.form = {
         user_name: data.user_name,
         user_email: data.user_email,
@@ -169,12 +188,10 @@ export default {
     },
 
     patchUser() {
-      // console.log(this.form)
       const setData = {
         user_id: this.user_id,
         form: this.form
       }
-      // console.log(setData)
       this.patchUsers(setData)
         .then((response) => {
           this.isMsg = response.msg
@@ -197,24 +214,33 @@ export default {
       this.user_id = data.user_id
     },
     changePassword() {
-      // console.log(this.form)
       const setData = {
         user_id: this.user_id,
         form: this.form
       }
-      // console.log(setData)
-      this.changePasswords(setData)
+      this.patchPasswords(setData)
         .then((response) => {
           this.isMsg = response.msg
           this.makeToast(this.isMsg)
           this.closeModal()
+          this.alert = false
           this.isUpdate = false
           this.getUsers()
         })
         .catch((error) => {
           this.alert = true
+          this.isUpdate = false
           this.isMsg = error.data.msg
+          this.makeToastError(this.isMsg)
         })
+    },
+    makeToastError(msg, append = false) {
+      this.$bvToast.toast(`${msg}`, {
+        title: 'Opss',
+        variant: 'danger',
+        autoHideDelay: 10000,
+        appendToast: append
+      })
     },
 
     deleteUser(data) {

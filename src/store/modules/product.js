@@ -1,8 +1,6 @@
 import axios from 'axios'
 export default {
   state: {
-    message: '',
-    keyword: '',
     count: 0,
     cart: [],
     totalData: null,
@@ -14,16 +12,11 @@ export default {
     sort: 'ASC'
   },
   mutations: {
-    setMsg(state, payload) {
-      console.log(payload)
-      state.message = payload
-    },
-    setSearchResult(state, payload) {
+    setProduct(state, payload) {
       state.product = payload
     },
-    setProduct(state, payload) {
-      state.product = payload.data
-      state.totalData = payload.pagination.totalData
+    setTotalData(state, payload) {
+      state.totalData = payload.data[1].totalData
     },
     changePage(state, payload) {
       state.page = payload
@@ -39,31 +32,19 @@ export default {
       state.cart = [...state.cart, setCart]
     },
     removeFromCart(state, payload) {
-      // console.log(payload)
       state.cart.splice(
         state.cart.findIndex(value => value.product_id === payload.product_id),
         1
       )
-    },
-    incrementCart(state, payload) {
-      // console.log(state)
-      // console.log(payload)
-      const cekData = state.cart.findIndex(
-        value => value.product_id === payload.product_id
-      )
-      state.cart[cekData].qty += 1
-    },
-    decrementCart(state, payload) {
-      const cekData = state.cart.findIndex(
-        value => value.product_id === payload.product_id
-      )
-      state.cart[cekData].qty -= 1
     },
     setInvoice(state, payload) {
       state.invoice = payload
     },
     cancelOrder(state) {
       state.cart = []
+    },
+    setSearchResult(state, payload) {
+      state.product = payload
     },
     sortProduct(state, payload) {
       state.page = payload.page
@@ -73,24 +54,25 @@ export default {
   },
   actions: {
     getProducts(context) {
-      axios
-        .get(
-          `${process.env.VUE_APP_URL}/product?limit=${context.state.limit}&page=${context.state.page}&name=${context.state.sortBy}&sort=${context.state.sort}`
-        )
-        .then(response => {
-          context.commit('setProduct', response.data)
-          // context.commit('setTotalData', response.data.pagination.totalData)
-        })
-        .catch(error => {
-          console.log(error.response)
-        })
+      return new Promise((resolve, reject) => {
+        axios
+          .get(
+            `${process.env.VUE_APP_URL}/product?limit=${context.state.limit}&page=${context.state.page}&name=${context.state.sortBy}&sort=${context.state.sort}`
+          )
+          .then(response => {
+            context.commit('setProduct', response.data.data[0])
+            context.commit('setTotalData', response.data)
+          })
+          .catch(error => {
+            reject(error.response)
+          })
+      })
     },
     addProducts(context, payload) {
       return new Promise((resolve, reject) => {
         axios
           .post(`${process.env.VUE_APP_URL}/product`, payload)
           .then(response => {
-            console.log(response.data)
             resolve(response.data)
           })
           .catch(error => {
@@ -99,7 +81,6 @@ export default {
       })
     },
     updateProducts(context, payload) {
-      console.log(payload.form)
       return new Promise((resolve, reject) => {
         axios
           .put(
@@ -142,8 +123,7 @@ export default {
       axios
         .get(`${process.env.VUE_APP_URL}/product/search?keyword=${payload}`)
         .then(response => {
-          console.log(response)
-          context.commit('setSearchResult', response.data.data[0])
+          context.commit('setSearchResult', response.data.data)
         })
         .catch(error => {
           console.log(error.response)
@@ -151,10 +131,7 @@ export default {
     }
   },
   getters: {
-    getMessage(state) {
-      return state.message
-    },
-    getProduct(state) {
+    getProductData(state) {
       return state.product
     },
     getTotalData(state) {

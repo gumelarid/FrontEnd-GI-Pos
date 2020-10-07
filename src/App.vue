@@ -12,7 +12,6 @@ export default {
     ...mapActions(['interceptorRequest', 'interceptorResponse'])
   },
   created() {
-    // console.log('hello')
     this.interceptorRequest()
     this.interceptorResponse()
   }

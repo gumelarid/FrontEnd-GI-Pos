@@ -4,7 +4,7 @@
       <b-row>
         <b-col md="8" class="header-title">
           <div class="list" v-b-toggle.sidebar>
-            <b-icon icon="list" style="width: 26px; height: 26px"></b-icon>
+            <b-icon icon="list" style="width: 26px; height: 26px;"></b-icon>
           </div>
           <div class="title">
             <p>Food Items</p>
@@ -19,18 +19,18 @@
       </b-row>
     </b-container>
     <Sidebar />
-    <b-container fluid style="padding-left: 0; padding-right: 0">
+    <b-container fluid style="padding-left:0; padding-right:0;">
       <b-row class="main">
         <b-col md="8" class="items">
-          <b-form class="m-3" inline @submit.prevent="search">
+          <b-form class="m-3" v-on:submit.prevent="search" inline>
             <b-input
-              type="search"
               placeholder="Search Product ....."
-              v-model="searchKeyword"
+              v-model="keyword"
             ></b-input>
             <b-button variant="info" type="submit" class="ml-md-2"
               >Search</b-button
             >
+
             <b-dropdown id="sort" class="m-2" variant="info" text="Sort">
               <b-dropdown-group id="dropdown-group-1" header="Product Name">
                 <b-dropdown-item-button @click="sortNameASC()"
@@ -60,6 +60,9 @@
               </b-dropdown-group>
             </b-dropdown>
           </b-form>
+
+          <!-- <div v-if="(!dataFound === '')" class="text-center text-item">{{ dataFound }}</div> -->
+
           <!-- product -->
           <b-row class="product-items">
             <b-col
@@ -68,14 +71,14 @@
               md="6"
               lg="4"
               class="item"
-              v-for="(value, indeks) in product"
+              v-for="(value, indeks) in products"
               :key="indeks"
             >
               <img
                 class="card-img-top"
                 :src="url + '/' + value.product_image"
                 alt="...."
-                style="max-height: 180px"
+                style="max-height:180px;"
               />
               <div class="item-body">
                 <div class="text-item">
@@ -91,8 +94,8 @@
                 </div>
                 <div class="button-add">
                   <b-button
-                    variant="outline-primary"
                     v-if="!checkList(value)"
+                    variant="outline-primary"
                     type="button"
                     @click="addToCart(value)"
                   >
@@ -144,6 +147,7 @@
             </div>
           </div>
           <div v-else>
+            <!-- {{cart}} -->
             <Cart />
           </div>
         </b-col>
@@ -153,11 +157,10 @@
 </template>
 
 <script>
-import { mapGetters, mapActions, mapMutations } from 'vuex'
 import Cart from '../components/_base/Cart'
 import Sidebar from '../components/_module/Sidebar'
+import { mapGetters, mapActions, mapMutations } from 'vuex'
 export default {
-  title: 'Dashboard - GI POS',
   name: 'Home',
   components: {
     Sidebar,
@@ -165,50 +168,56 @@ export default {
   },
   data() {
     return {
-      alert: false,
-      searchKeyword: '',
       showPagination: true,
       currentPage: 1,
-      form: {},
+      keyword: '',
       url: process.env.VUE_APP_URL
     }
   },
-  created() {
-    this.getProducts()
-  },
   computed: {
     ...mapGetters({
-      product: 'getProductData',
+      products: 'getProduct',
       limit: 'getLimit',
+      page: 'getPage',
       totalData: 'getTotalData',
       cart: 'getCart'
     })
   },
+  created() {
+    this.getProducts()
+  },
   methods: {
+    ...mapActions(['getProducts', 'searchProduct']),
     ...mapMutations([
+      'setSearchResult',
+      'setKeyword',
+      'sortProduct',
       'changePage',
       'addToCart',
-      'removeFromCart',
-      'setProduct',
-      'sortProduct'
+      'removeFromCart'
     ]),
-    ...mapActions(['getProducts', 'searchProduct']),
-
-    pageChange(data) {
-      this.changePage(data)
+    // search
+    search() {
+      if (this.keyword === '') {
+        this.getProducts()
+        this.$router.push('')
+        this.showPagination = true
+      } else {
+        this.searchProduct(this.keyword)
+        this.$router.push(`?keyword=${this.keyword}`)
+        this.showPagination = false
+      }
+    },
+    pageChange(value) {
+      if (parseInt(this.$route.query.page) !== value) {
+        this.$router.push(`?page=${value}`)
+      }
+      this.changePage(value)
       this.getProducts()
     },
     checkList(data) {
-      return this.cart.some((value) => value.product_id === data.product_id)
-    },
-    search() {
-      if (this.searchKeyword === '') {
-        this.getProducts()
-        this.showPagination = true
-      } else {
-        this.showPagination = false
-        this.searchProduct(this.searchKeyword)
-      }
+      //   console.log(data)
+      return this.cart.some(value => value.product_id === data.product_id)
     },
     sortNameASC() {
       const data = {
@@ -218,18 +227,19 @@ export default {
       }
       this.sortProduct(data)
       this.getProducts()
-      this.$router.push(`?orderBy=${data.sortBy}?sort=${data.sort}`)
+      this.$router.push(`?orderBy=${data.sortBy}`)
     },
     sortNameDESC() {
       const data = {
         sortBy: 'product_name',
-        sort: 'desc',
+        sort: 'DESC',
         page: 1
       }
       this.sortProduct(data)
       this.getProducts()
-      this.$router.push(`?orderBy=${data.sortBy}?sort=${data.sort}`)
+      this.$router.push(`?orderBy=${data.sortBy}`)
     },
+    // price
     sortPriceASC() {
       const data = {
         sortBy: 'product_price',
@@ -238,18 +248,19 @@ export default {
       }
       this.sortProduct(data)
       this.getProducts()
-      this.$router.push(`?orderBy=${data.sortBy}?sort=${data.sort}`)
+      this.$router.push(`?orderBy=${data.sortBy}`)
     },
     sortPriceDESC() {
       const data = {
         sortBy: 'product_price',
-        sort: 'desc',
+        sort: 'DESC',
         page: 1
       }
       this.sortProduct(data)
-      this.$router.push(`?orderBy=${data.sortBy}?sort=${data.sort}`)
+      this.$router.push(`?orderBy=${data.sortBy}`)
       this.getProducts()
     },
+    // date
     sortDateASC() {
       const data = {
         sortBy: 'product_created_at',
@@ -258,7 +269,7 @@ export default {
       }
       this.sortProduct(data)
 
-      this.$router.push(`?orderBy=${data.sortBy}?sort=${data.sort}`)
+      this.$router.push(`?orderBy=${data.sortBy}`)
 
       this.getProducts()
     },
@@ -269,16 +280,8 @@ export default {
         page: 1
       }
       this.sortProduct(data)
-      this.$router.push(`?orderBy=${data.sortBy}?sort=${data.sort}`)
+      this.$router.push(`?orderBy=${data.sortBy}`)
       this.getProducts()
-    },
-
-    makeToast(variant, title, msg) {
-      this.$bvToast.toast(msg, {
-        title: title,
-        variant: variant,
-        solid: true
-      })
     }
   }
 }

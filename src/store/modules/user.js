@@ -2,23 +2,25 @@ import axios from 'axios'
 
 export default {
   state: {
-    user: []
+    userData: []
   },
   mutations: {
-    setTbUser(state, payload) {
-      state.user = payload.data
+    setUserData(state, payload) {
+      state.userData = payload.data
     }
   },
   actions: {
     getUsers(context, payload) {
-      axios
-        .get(`${process.env.VUE_APP_URL}/users`)
-        .then(response => {
-          context.commit('setTbUser', response.data)
-        })
-        .catch(error => {
-          console.log(error.response)
-        })
+      return new Promise((resolve, reject) => {
+        axios
+          .get(`${process.env.VUE_APP_URL}/users`)
+          .then(response => {
+            context.commit('setUserData', response.data)
+          })
+          .catch(error => {
+            reject(error.response)
+          })
+      })
     },
     patchUsers(context, payload) {
       // console.log(payload)
@@ -36,7 +38,7 @@ export default {
           })
       })
     },
-    changePasswords(context, payload) {
+    patchPasswords(context, payload) {
       return new Promise((resolve, reject) => {
         axios
           .patch(
@@ -44,11 +46,9 @@ export default {
             payload.form
           )
           .then(response => {
-            console.log(response)
             resolve(response.data)
           })
           .catch(error => {
-            console.log(error.response)
             reject(error.response)
           })
       })
@@ -67,8 +67,8 @@ export default {
     }
   },
   getters: {
-    getTbUser(state) {
-      return state.user
+    getUserData(state) {
+      return state.userData
     }
   }
 }

@@ -77,14 +77,8 @@
       title="Product"
       hide-footer
     >
-      <p class="alert alert-danger" v-if="alert">{{ isMsg }}</p>
+      <p class="alert alert-danger" v-if="message">{{ message }}</p>
       <form @submit.prevent="addProduct">
-        <div class="form-group row">
-          <label class="col-sm-2 col-form-label">Image</label>
-          <div class="col-sm-10">
-            <input type="File" @change="handleFile" class="form-control" />
-          </div>
-        </div>
         <div class="form-group row">
           <label class="col-sm-2 col-form-label">Name</label>
           <div class="col-sm-10">
@@ -97,7 +91,12 @@
             />
           </div>
         </div>
-
+        <div class="form-group row">
+          <label class="col-sm-2 col-form-label">Image</label>
+          <div class="col-sm-10">
+            <input type="File" @change="handleFile" class="form-control" />
+          </div>
+        </div>
         <div class="form-group row">
           <label class="col-sm-2 col-form-label">Price</label>
           <div class="col-sm-10">
@@ -146,7 +145,7 @@
 </template>
 
 <script>
-import { mapActions, mapGetters, mapMutations } from 'vuex'
+import { mapGetters, mapActions, mapMutations } from 'vuex'
 export default {
   name: 'TbProduct',
   data() {
@@ -156,35 +155,52 @@ export default {
       isUpdate: false,
       alert: false,
       isMsg: '',
-      form: {},
-      url: process.env.VUE_APP_URL
+      url: process.env.VUE_APP_URL,
+      form: {
+        product_name: '',
+        id_category: '',
+        product_price: '',
+        product_image: '',
+        status: 1
+      }
     }
-  },
-  created() {
-    this.getProducts()
-    this.getCategorys()
   },
   computed: {
     ...mapGetters({
-      products: 'getProductData',
       category: 'getCategory',
+      products: 'getProduct',
       limit: 'getLimit',
-      totalData: 'getTotalData'
+      page: 'getPage',
+      totalData: 'getTotalData',
+      message: 'getMessage'
     })
   },
   methods: {
-    ...mapMutations(['changePage']),
     ...mapActions([
-      'getProducts',
-      'pageChange',
       'getCategorys',
+      'getProducts',
       'addProducts',
       'updateProducts',
       'deleteProducts'
     ]),
-    pageChange(data) {
-      //   console.log(data)
-      this.changePage(data)
+
+    ...mapMutations(['changePage']),
+    makeToast(msg, append = false) {
+      this.$bvToast.toast(`${msg}`, {
+        title: 'Success',
+        variant: 'success',
+        autoHideDelay: 10000,
+        appendToast: append
+      })
+    },
+    closeModal() {
+      this.$refs['modal-product'].hide()
+    },
+    pageChange(value) {
+      // if (parseInt(this.$route.query.page) !== value) {
+      this.$router.push(`?page=${value}`)
+      // }
+      this.changePage(value)
       this.getProducts()
     },
     handleFile(e) {
@@ -220,15 +236,15 @@ export default {
     setProduct(data) {
       this.form = {
         product_name: data.product_name,
-        id_category: data.category_id,
+        id_category: data.id_category,
         product_price: data.product_price,
         status: data.status
       }
       this.isUpdate = true
       this.product_id = data.product_id
     },
-    // fungsi patch product
     patchProduct() {
+      // if (this.form.product_image) {
       const data = new FormData()
       data.append('product_name', this.form.product_name)
       data.append('id_category', this.form.id_category)
@@ -240,19 +256,42 @@ export default {
         form: data
       }
       this.updateProducts(payload)
-        .then((response) => {
-          this.isMsg = response.msg
-          this.makeToast(this.isMsg)
+        .then((respsone) => {
+          this.getProductItem()
+          this.makeToast('Product Update')
           this.closeModal()
           this.isUpdate = false
-          this.getProducts()
         })
         .catch((error) => {
-          this.alert = true
-          this.isMsg = error.data.msg
+          // if (error) {
+          //   alert('upload your new image')
+          // }
+          console.log(error)
         })
+      // } else {
+      //   const data = new FormData()
+      //   data.append('product_name', this.form.product_name)
+      //   data.append('category_id', this.form.category_id)
+      //   data.append('product_price', this.form.product_price)
+      //   data.append('status', this.form.status)
+      //   const payload = {
+      //     product_id: this.product_id,
+      //     form: data
+      //   }
+      //   this.updateProducts(payload)
+      //     .then((respsone) => {
+      //       this.getProductItem()
+      //       this.makeToast('Product Update')
+      //       this.closeModal()
+      //       this.isUpdate = false
+      //     })
+      //     .catch((error) => {
+      //       if (error) {
+      //         alert('upload your new image')
+      //       }
+      //     })
+      // }
     },
-    // end fungsi
     deleteProduct(data) {
       this.deleteProducts(data.product_id)
         .then((response) => {
@@ -266,22 +305,14 @@ export default {
           this.alert = true
           this.isMsg = error.data.msg
         })
-    },
-    makeToast(msg, append = false) {
-      this.$bvToast.toast(`${msg}`, {
-        title: 'Success',
-        variant: 'success',
-        autoHideDelay: 10000,
-        appendToast: append
-      })
-    },
-    closeModal() {
-      this.$refs['modal-product'].hide()
     }
+  },
+  created() {
+    this.getProducts()
+    this.getCategorys()
   }
 }
 </script>
-
 <style scoped>
 /* recent order */
 .recent-order {

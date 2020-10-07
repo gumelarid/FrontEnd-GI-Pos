@@ -8,7 +8,9 @@
       <div>
         <span>
           <strong>Wellcome</strong> |
-          <span class="badge badge-primary" v-if="user.user_role === 1">Admin</span>
+          <span class="badge badge-primary" v-if="user.user_role === 1"
+            >Admin</span
+          >
           <span class="badge badge-success" v-else>Chasier</span>
         </span>
         <h5>{{ user.user_name }}</h5>
@@ -16,24 +18,24 @@
     </div>
     <div class="navigation px-3 py-2">
       <router-link to="/" class="nav-link">
-        <b-icon icon="book" style="height:26px; width:26px;"></b-icon>
+        <b-icon icon="book" style="height: 26px; width: 26px"></b-icon>
         <div class="text-link">Product</div>
       </router-link>
       <router-link to="/history" class="nav-link">
-        <b-icon icon="receipt" style="height:26px; width:26px;"></b-icon>
+        <b-icon icon="receipt" style="height: 26px; width: 26px"></b-icon>
         <div class="text-link">History</div>
       </router-link>
       <router-link to="/user" class="nav-link" v-if="user.user_role === 1">
-        <b-icon icon="person-fill" style="height:26px; width:26px;"></b-icon>
+        <b-icon icon="person-fill" style="height: 26px; width: 26px"></b-icon>
         <div class="text-link">User</div>
       </router-link>
       <router-link to="/manage" class="nav-link" v-if="user.user_role === 1">
-        <b-icon icon="gear" style="height:26px; width:26px;"></b-icon>
+        <b-icon icon="gear" style="height: 26px; width: 26px"></b-icon>
         <div class="text-link">Manage</div>
       </router-link>
       <hr class="mt-5" />
       <a @click="handleLogout" class="logout-link">
-        <b-icon icon="Power" style="height:26px; width:26px;"></b-icon>
+        <b-icon icon="Power" style="height: 26px; width: 26px"></b-icon>
         <div class="text-link">Logout</div>
       </a>
     </div>
@@ -46,7 +48,10 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
   name: 'sidebar',
   methods: {
-    ...mapActions({ handleLogout: 'logout' })
+    ...mapActions(['logout']),
+    handleLogout() {
+      this.logout()
+    }
   },
   computed: {
     ...mapGetters({

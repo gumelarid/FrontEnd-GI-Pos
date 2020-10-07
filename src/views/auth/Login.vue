@@ -3,7 +3,7 @@
     <div class="content">
       <h3>Login now</h3>
       <hr />
-      <b-alert :show="alert">{{ isMsg }}</b-alert>
+      <b-alert variant="danger" :show="alert">{{ isMsg }}</b-alert>
       <form @submit.prevent="onSubmit">
         <div class="form-group row">
           <div class="col-sm-12 form-input">
@@ -39,6 +39,7 @@
 <script>
 import { mapActions } from 'vuex'
 export default {
+  title: 'Login - GI POS',
   name: 'Login',
   data() {
     return {
@@ -55,12 +56,25 @@ export default {
     onSubmit() {
       this.login(this.form)
         .then((result) => {
-          this.$router.push('/')
+          this.alert = false
+          this.isMsg = ''
+          this.makeToast('Success Login')
+          setTimeout(() => {
+            this.$router.push('/')
+          }, 2000)
         })
         .catch((error) => {
           this.alert = true
           this.isMsg = error
         })
+    },
+    makeToast(msg, append = false) {
+      this.$bvToast.toast(`${msg}`, {
+        title: 'Success',
+        variant: 'success',
+        autoHideDelay: 10000,
+        appendToast: append
+      })
     },
     onReset() {
       this.form = {
