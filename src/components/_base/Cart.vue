@@ -137,7 +137,6 @@
 
 <script>
 import { mapActions, mapGetters, mapMutations } from 'vuex'
-import Jspdf from 'jspdf'
 export default {
   name: 'cart',
   data() {
