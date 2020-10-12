@@ -183,7 +183,6 @@ export default {
       'deleteProducts'
     ]),
     pageChange(data) {
-      //   console.log(data)
       this.changePage(data)
       this.getProducts()
     },
@@ -254,17 +253,35 @@ export default {
     },
     // end fungsi
     deleteProduct(data) {
-      this.deleteProducts(data.product_id)
-        .then((response) => {
-          this.isMsg = response.msg
-          this.makeToast(this.isMsg)
-          this.closeModal()
-          this.isUpdate = false
-          this.getProducts()
+      this.$bvModal.msgBoxConfirm(`Are you sure delete ${data.product_name} ?`, {
+        title: 'Delete Product',
+        size: 'sm',
+        buttonSize: 'sm',
+        okVariant: 'danger',
+        okTitle: 'YES',
+        cancelTitle: 'NO',
+        footerClass: 'p-2',
+        hideHeaderClose: false,
+        centered: true
+      })
+        .then(response => {
+          if (response === true) {
+            this.deleteProducts(data.product_id)
+              .then((response) => {
+                this.isMsg = response.msg
+                this.makeToast(this.isMsg)
+                this.closeModal()
+                this.isUpdate = false
+                this.getProducts()
+              })
+              .catch((error) => {
+                this.alert = true
+                this.isMsg = error.data.msg
+              })
+          }
         })
-        .catch((error) => {
-          this.alert = true
-          this.isMsg = error.data.msg
+        .catch(err => {
+          console.log(err)
         })
     },
     makeToast(msg, append = false) {

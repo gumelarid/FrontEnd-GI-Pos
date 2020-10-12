@@ -143,17 +143,32 @@ export default {
         })
     },
     deleteCategory(data) {
-      this.deleteCategorys(data.category_id)
-        .then((response) => {
-          this.isMsg = response.msg
-          this.makeToast(this.isMsg)
-          this.closeModal()
-          this.isUpdate = false
-          this.getCategorys()
-        })
-        .catch((error) => {
-          this.alert = true
-          this.isMsg = error.data.msg
+      this.$bvModal.msgBoxConfirm(`Are you sure delete ${data.category_name} ?`, {
+        title: 'Delete Category',
+        size: 'sm',
+        buttonSize: 'sm',
+        okVariant: 'danger',
+        okTitle: 'YES',
+        cancelTitle: 'NO',
+        footerClass: 'p-2',
+        hideHeaderClose: false,
+        centered: true
+      })
+        .then(response => {
+          if (response === true) {
+            this.deleteCategorys(data.category_id)
+              .then((response) => {
+                this.isMsg = response.msg
+                this.makeToast(this.isMsg)
+                this.closeModal()
+                this.isUpdate = false
+                this.getCategorys()
+              })
+              .catch((error) => {
+                this.alert = true
+                this.isMsg = error.data.msg
+              })
+          }
         })
     }
   }

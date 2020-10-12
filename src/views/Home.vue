@@ -170,6 +170,7 @@ export default {
       showPagination: true,
       currentPage: 1,
       form: {},
+      productsSearch: [],
       url: process.env.VUE_APP_URL
     }
   },
@@ -207,7 +208,15 @@ export default {
         this.showPagination = true
       } else {
         this.showPagination = false
+        this.$router.push(`?keyword=${this.searchKeyword}`)
         this.searchProduct(this.searchKeyword)
+          .then(response => {
+            console.log(response)
+          }).catch(error => {
+            this.getProducts()
+            this.makeToast('danger', 'Not Found', error.data.msg)
+            console.log(error.data.msg)
+          })
       }
     },
     sortNameASC() {

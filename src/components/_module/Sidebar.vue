@@ -50,7 +50,22 @@ export default {
   methods: {
     ...mapActions(['logout']),
     handleLogout() {
-      this.logout()
+      this.$bvModal.msgBoxConfirm('Are you sure logout ?', {
+        title: 'logout now',
+        size: 'sm',
+        buttonSize: 'sm',
+        okVariant: 'danger',
+        okTitle: 'YES',
+        cancelTitle: 'NO',
+        footerClass: 'p-2',
+        hideHeaderClose: false,
+        centered: true
+      })
+        .then(response => {
+          if (response === true) {
+            this.logout()
+          }
+        })
     }
   },
   computed: {

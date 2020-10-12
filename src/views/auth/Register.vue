@@ -3,7 +3,6 @@
     <div class="content">
       <h3>Register Now</h3>
       <hr />
-      <b-alert variant="success" :show="success">{{ isMsg }}</b-alert>
       <b-alert variant="danger" :show="alert">{{ isMsg }}</b-alert>
       <form @submit.prevent="onRegister">
         <div class="form-group row">
@@ -68,15 +67,15 @@ export default {
     onRegister() {
       this.register(this.form)
         .then((response) => {
-          this.success = true
+          // this.success = true
           this.alert = false
-          this.isMsg = response.msg
-          this.makeToast(this.isMsg)
+          this.isMsg = response
           this.form = {
             user_name: '',
             user_email: '',
             user_password: ''
           }
+          this.makeToast(this.isMsg)
           this.$router.push('/login')
         })
         .catch((error) => {
@@ -84,6 +83,14 @@ export default {
           this.alert = true
           this.isMsg = error.msg
         })
+    },
+    makeToast(msg, append = false) {
+      this.$bvToast.toast(`${msg}`, {
+        title: 'Success',
+        variant: 'success',
+        autoHideDelay: 10000,
+        appendToast: append
+      })
     }
   }
 }

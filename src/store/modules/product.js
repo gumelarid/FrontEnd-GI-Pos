@@ -113,6 +113,7 @@ export default {
           .post(`${process.env.VUE_APP_URL}/order`, payload)
           .then(response => {
             context.commit('setInvoice', response.data.data.invoice)
+            resolve(response.data.msg)
           })
           .catch(error => {
             reject(error.response)
@@ -120,14 +121,16 @@ export default {
       })
     },
     searchProduct(context, payload) {
-      axios
-        .get(`${process.env.VUE_APP_URL}/product/search?keyword=${payload}`)
-        .then(response => {
-          context.commit('setSearchResult', response.data.data)
-        })
-        .catch(error => {
-          console.log(error.response)
-        })
+      return new Promise((resolve, reject) => {
+        axios
+          .get(`${process.env.VUE_APP_URL}/product/search?keyword=${payload}`)
+          .then(response => {
+            context.commit('setSearchResult', response.data.data)
+          })
+          .catch(error => {
+            reject(error.response)
+          })
+      })
     }
   },
   getters: {
