@@ -129,8 +129,7 @@
         <p>Payment : Cash</p>
       </div>
       <div class="modal-footer">
-        <!-- <button class="btn btn-print" @click="cancelOrder()">Print</button> -->
-        <button class="btn btn-print" @click="generatePdf">Print</button>
+        <button class="btn btn-print" @click="cancelOrder()">Print</button>
       </div>
     </b-modal>
   </div>
@@ -190,24 +189,6 @@ export default {
         this.cart.findIndex((value) => value.product_id === data.product_id),
         1
       )
-    },
-    generatePdf() {
-      const doc = new Jspdf()
-      let data = []
-      for (var i = 0; i < this.cart.length; i += 1) {
-        data.push(Object.assign({}, data));
-      }
-      console.log(data)
-      doc.setFont('helvetica')
-      doc.setFontSize(12)
-      doc.text(
-        ` Status: Success! \n \n Total Price: Rp. ${
-          this.totalPrice
-        }\n Balance left: Rp. `,
-        15,
-        15
-      )
-      doc.save('pdf.pdf')
     }
   }
 }
