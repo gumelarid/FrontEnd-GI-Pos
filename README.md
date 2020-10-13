@@ -1,6 +1,6 @@
 <h1 align='center'>Vue JS - GI POS</h1>
 
-Gi Pos is a point of sales application for cafe and food outlets. [More about Vue](https://vuejs.org/)
+Gi Pos is a point of sales application for cafe and food outlets, made with Vue JS for Frontend and Express JS for Backend, GI Pos provides several features that you can use and manage easily. This project is the frontend of the Backend API GI POS that has been done before, you can see it [`here`](https://github.com/galuhprahadi96/BackEnd-API-GI-Post). [More about Vue](https://vuejs.org/)
 
 ## Built With
 
