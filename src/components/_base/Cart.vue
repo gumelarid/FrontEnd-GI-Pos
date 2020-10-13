@@ -213,7 +213,7 @@ export default {
         5,
         5
       )
-      doc.save('pdf.pdf')
+      doc.save('print.pdf')
       this.cancelOrder()
     }
   }
