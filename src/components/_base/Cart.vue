@@ -129,7 +129,8 @@
         <p>Payment : Cash</p>
       </div>
       <div class="modal-footer">
-        <button class="btn btn-print" @click="cancelOrder()">Print</button>
+        <button class="btn btn-print" @click="downloadPDF()">Print</button>
+        <!-- <button class="btn btn-print" @click="cancelOrder()">Print</button> -->
       </div>
     </b-modal>
   </div>
@@ -137,6 +138,8 @@
 
 <script>
 import { mapActions, mapGetters, mapMutations } from 'vuex'
+import JsPDF from 'jspdf'
+import 'jspdf-autotable'
 export default {
   name: 'cart',
   data() {
@@ -188,6 +191,30 @@ export default {
         this.cart.findIndex((value) => value.product_id === data.product_id),
         1
       )
+    },
+    downloadPDF() {
+      let data = []
+      this.cart.forEach(item => {
+        const dataSet = [`${item.product_name}  ${item.qty}x  ${item.product_price * item.qty}\n`]
+        data += dataSet
+      })
+      const doc = new JsPDF()
+      doc.setFontSize(14)
+      doc.text(
+        `   Check Out Print
+      Cashier : ${this.user.user_name}
+      Invoice no. #${this.invoice}
+      ---------------------------------------------------
+      ${data}
+      Total + ppn 10% : Rp. ${this.totalPrice + this.totalPrice * 0.1}
+      Payment : Cash
+      ---------------------------------------------------
+      Thank you ! `,
+        5,
+        5
+      )
+      doc.save('pdf.pdf')
+      this.cancelOrder()
     }
   }
 }
