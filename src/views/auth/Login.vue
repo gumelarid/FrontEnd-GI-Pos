@@ -8,6 +8,7 @@
         <div class="form-group row">
           <div class="col-sm-12 form-input">
             <input
+              v-focus
               type="email"
               class="form-control"
               placeholder="Input your email"
