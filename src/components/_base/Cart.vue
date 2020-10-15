@@ -1,48 +1,27 @@
 <template>
   <div>
     <div class="item-order" v-for="(value, index) in cart" :key="index">
-      <img
-        :src="url + '/' + value.product_image"
-        alt="...."
-        width="100px"
-        height="100px"
-      />
+      <img :src="url + '/' + value.product_image" alt="...." width="100px" height="100px" />
       <div class="selected-items">
         <p>{{ value.product_name }}</p>
-
         <div class="quantity">
           <b-button-group size="sm">
             <b-button v-if="value.qty == 1" variant="outline-warning">
-              <b-icon
-                variant="dark"
-                icon="trash"
-                @click="removeCart(value)"
-              ></b-icon>
+              <b-icon variant="dark" icon="trash" @click="removeCart(value)"></b-icon>
             </b-button>
-            <b-button
-              v-else
-              variant="outline-warning"
-              @click="decrementCart(value)"
-            >
+            <b-button v-else variant="outline-warning" @click="decrementCart(value)">
               <b-icon variant="dark" icon="dash"></b-icon>
             </b-button>
-
-            <input
-              class="input-qty"
-              type="text"
-              v-model="value.qty"
-              min="1"
-              max="100"
-            />
+            <input class="input-qty" type="text" v-model="value.qty" min="1" max="100" />
             <b-button variant="outline-warning" @click="incrementCart(value)">
               <b-icon variant="dark" icon="plus"></b-icon>
             </b-button>
           </b-button-group>
           <span class="price">
             Rp.{{
-              (value.product_price * value.qty)
-                .toString()
-                .replace(/\B(?=(\d{3})+(?!\d))/g, '.')
+            (value.product_price * value.qty)
+            .toString()
+            .replace(/\B(?=(\d{3})+(?!\d))/g, '.')
             }}
           </span>
         </div>
@@ -58,27 +37,15 @@
         </p>
       </div>
       <p class="text-left text-muted">*Belum Termasuk PPN</p>
-      <button
-        type="button"
-        class="btn btn-checkout"
-        @click="checkOut(cart)"
-        v-b-modal.modal-checkout
-      >
+      <button type="button" class="btn btn-checkout" @click="checkOut(cart)" v-b-modal.modal-checkout>
         Checkout
       </button>
       <button type="button" @click="cancelOrder()" class="btn btn-cancels">
         Cancel
       </button>
     </div>
-
     <!-- modal product -->
-    <b-modal
-      id="modal-checkout"
-      ref="modal-checkout"
-      centered
-      title="Checkout Success!"
-      hide-footer
-    >
+    <b-modal id="modal-checkout" ref="modal-checkout" centered title="Checkout Success!" hide-footer>
       <div class="modal-header">
         <h5 class="modal-title">Checkout</h5>
         <h5 class="modal-title">Receipt no: #{{ invoice }}</h5>
@@ -87,24 +54,19 @@
         <small>Chasier : {{ user.user_name }}</small>
       </div>
       <div class="modal-body">
-        <div
-          class="menu-item-order"
-          v-for="(value, index) in cart"
-          :key="index"
-        >
+        <div class="menu-item-order" v-for="(value, index) in cart" :key="index">
           <div>
             <strong>{{ value.product_name }} x{{ value.qty }}</strong>
           </div>
           <div>
             RP
             {{
-              (value.product_price * value.qty)
-                .toString()
-                .replace(/\B(?=(\d{3})+(?!\d))/g, '.')
+            (value.product_price * value.qty)
+            .toString()
+            .replace(/\B(?=(\d{3})+(?!\d))/g, '.')
             }}
           </div>
         </div>
-
         <div class="ppn-order">
           <div>
             <strong>PPN 10%</strong>
@@ -112,18 +74,18 @@
           <div>
             RP
             {{
-              (totalPrice * 0.1)
-                .toString()
-                .replace(/\B(?=(\d{3})+(?!\d))/g, '.')
+            (totalPrice * 0.1)
+            .toString()
+            .replace(/\B(?=(\d{3})+(?!\d))/g, '.')
             }}
           </div>
         </div>
         <p class="text-right">
           Total : Rp.
           {{
-            (totalPrice + totalPrice * 0.1)
-              .toString()
-              .replace(/\B(?=(\d{3})+(?!\d))/g, '.')
+          (totalPrice + totalPrice * 0.1)
+          .toString()
+          .replace(/\B(?=(\d{3})+(?!\d))/g, '.')
           }}
         </p>
         <p>Payment : Cash</p>
@@ -135,7 +97,6 @@
     </b-modal>
   </div>
 </template>
-
 <script>
 import { mapActions, mapGetters, mapMutations } from 'vuex'
 import JsPDF from 'jspdf'
@@ -195,37 +156,50 @@ export default {
     downloadPDF() {
       let data = []
       this.cart.forEach(item => {
-        const dataSet = [`${item.product_name}  ${item.qty}x  ${item.product_price * item.qty}\n`]
-        data += dataSet
+        const dataSet = [`${item.product_name}`, `${item.qty}x`, `${item.product_price * item.qty}\n`]
+        data = [...data, dataSet]
       })
+      console.log(data)
       const doc = new JsPDF()
-      doc.setFontSize(14)
-      doc.text(
-        `   Check Out Print
+
+      // From Javascript
+      var finalY = doc.lastAutoTable.finalY || 10
+      doc.setFontSize(10)
+      doc.text(`
+      Check Out Print
+
+      ---------------------------------------
       Cashier : ${this.user.user_name}
       Invoice no. #${this.invoice}
-      ---------------------------------------------------
-      ${data}
+      ---------------------------------------
       Total + ppn 10% : Rp. ${this.totalPrice + this.totalPrice * 0.1}
-      Payment : Cash
-      ---------------------------------------------------
-      Thank you ! `,
-        5,
-        5
-      )
+      ---------------------------------------
+
+      `, 8, 5)
+      doc.autoTable({
+        startY: finalY + 27,
+        tableWidth: 'wrap',
+        styles: { cellPadding: 0.5, fontSize: 10 },
+        head: [
+          ['Name', 'qty', 'Sub-Total']
+        ],
+        body: data,
+        theme: 'plain'
+      })
       doc.save('print.pdf')
       this.cancelOrder()
     }
   }
 }
-</script>
 
+</script>
 <style scoped>
 /* -- order-quantity -- */
 .quantity {
   padding-top: 10px;
   display: inline-block;
 }
+
 .input-qty {
   width: 35px;
   text-align: center;
@@ -406,13 +380,16 @@ span.text-muted {
   .cart-item {
     height: max-content;
   }
+
   #modalCheckout .modal-header {
     display: flex;
     flex-direction: column;
   }
+
   main .col-md-8 {
     padding-left: 28px;
   }
+
   .product-items {
     padding: 0;
   }
@@ -422,6 +399,7 @@ span.text-muted {
     height: fit-content;
     top: 20%;
   }
+
   .cart-item {
     padding: 50px 5px;
   }
@@ -445,7 +423,7 @@ span.text-muted {
     padding-right: 0px;
   }
 
-  .search:hover > .search-txt {
+  .search:hover>.search-txt {
     width: 100px;
   }
 }
@@ -455,6 +433,7 @@ span.text-muted {
   .selected-items p {
     text-align: center;
   }
+
   .cart-item .cart-body {
     margin-top: 2px;
   }
@@ -463,6 +442,7 @@ span.text-muted {
     font-size: 20px;
     line-height: 25px;
   }
+
   .cart-body span.text {
     font-size: 13px;
     line-height: 18px;
@@ -471,6 +451,7 @@ span.text-muted {
   .card-history {
     flex-wrap: unset;
   }
+
   .income {
     width: 200px;
     height: 120px;
@@ -501,6 +482,7 @@ span.text-muted {
     height: 100px;
     border-radius: 10px;
   }
+
   .price {
     padding-top: 1px;
   }
@@ -555,4 +537,5 @@ span.text-muted {
     padding: 0;
   }
 }
+
 </style>
