@@ -24,7 +24,7 @@ Gi Pos is a point of sales application for cafe and food outlets, made with Vue 
 
 ## Visit the Web
 
-You can visit the web [`here`](https://gi-pos.netlify.app)
+You can visit the web [`here`](https://gi-pos.netlify.app/login)
 
 ## Compiles and hot-reloads for development
 
