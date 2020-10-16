@@ -1,4 +1,11 @@
 <h1 align='center'>Vue JS - GI POS</h1>
+<p align="center">
+    <a href="https://gi-pos.netlify.app/login">View Demo</a>
+    ·
+    <a href="https://github.com/galuhprahadi96/FrontEnd-GI-Pos/issues">Report Bug</a>
+    ·
+    <a href="https://github.com/galuhprahadi96/FrontEnd-GI-Pos/issues">Request Feature</a>
+  </p>
 
 ![smartmockups_kg7zftnm](https://user-images.githubusercontent.com/40691793/95864838-24df5580-0d90-11eb-979f-72e32763eb94.jpg)
 
@@ -22,25 +29,12 @@ Gi Pos is a point of sales application for cafe and food outlets, made with Vue 
 3. Type `npm install` or `yarn install`
 4. Type `npm start`
 
-## Visit the Web
+## Acknowledgements
 
-You can visit the web [`here`](https://gi-pos.netlify.app/login)
-
-## Compiles and hot-reloads for development
-
-```
-npm run serve
-```
-
-## Compiles and minifies for production
-
-```
-npm run build
-```
-
-## Customize configuration
-
-See [Configuration Reference](https://cli.vuejs.org/config/).
+- [Axios](https://www.npmjs.com/package/axios)
+- [Vuex](https://vuex.vuejs.org/)
+- [Chartjs](https://www.chartjs.org/)
+- [JSPdf-Autotable](https://github.com/simonbengtsson/jsPDF-AutoTable)
 
 ## License
 
